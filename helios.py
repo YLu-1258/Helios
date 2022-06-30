@@ -5,7 +5,7 @@ from pathlib import Path
 class Helios(commands.Bot):
     def __init__(self):
         super().__init__(command_prefix=".")
-        self._cogs = [path.stem for path in Path("./PROJECT HELIOS/Cogs").glob("*.py")]
+        self._cogs = [path.stem for path in Path("./Cogs").glob("*.py")]
     
     def load_cogs(self):    
         print("Loading cogs")
@@ -16,7 +16,7 @@ class Helios(commands.Bot):
 
     def run(self):
         self.load_cogs()
-        with open("./PROJECT HELIOS/t0ken", "r", encoding="utf-8") as f:
+        with open("./t0ken", "r", encoding="utf-8") as f:
             TOKEN = f.read()
         super().run(TOKEN, reconnect= True)
     
@@ -24,8 +24,6 @@ class Helios(commands.Bot):
         await self.change_presence(status=discord.Status.do_not_disturb, activity=discord.Game('Jammin to music'))
         print("{0} has sucessfully connected to Discord".format(bot.user))
     
-
-
 
 bot = Helios()
 bot.run()

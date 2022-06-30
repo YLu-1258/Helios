@@ -6,6 +6,8 @@ import random
 import asyncio
 import pafy
 
+
+from discord.errors import Forbidden
 from urllib import request
 from re import findall as fa
 from discord.ext import commands
@@ -149,7 +151,7 @@ async def eightball(ctx, *, question):
     #help
 
     client = commands.Bot(command_prefix= ".")
-    client.remove_command("help")
+    bot.remove_command("help")
 
     @client.group(invoke_without_command = True)
     async def help(ctx):
