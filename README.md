@@ -1,17 +1,9 @@
-## Project-Artemis
-
-
-
-## Checklist 
-❌ Discord Bot Website
 
 ## Project-Helios
 
 hello dingus
 
-## Checklist 
-❌ Discord Bot
 
-> This project was led by Yixuan Lu and ____
+> This project was led by Yixuan Lu and William Yuan
 
 **Include version number and details when comitting**
