@@ -2,8 +2,6 @@ import discord
 from discord.ext import commands
 from pathlib import Path
 
-bot.remove_command('help')
-
 class Helios(commands.Bot):
     def __init__(self):
         super().__init__(command_prefix=".")
