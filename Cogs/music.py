@@ -23,7 +23,6 @@ class IndexOutOfBounds(commands.CommandError):
     pass
 
 
-
 def valid_url(query):
     url_re = re.compile(
         r'^(?:http|ftp)s?://' # http:// or https://
@@ -470,6 +469,24 @@ class Music(commands.Cog):
         embed = discord.Embed(title="POS: {0} TOTAL: {0}".format((player.Queue.pos - 1), player.Queue.total), color=0x00ffff)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         await ctx.reply(embed=embed, mention_author=False)
+
+    client = commands.Bot(command_prefix=".",help_command = None)
+
+    @client.event
+    async def on_ready():
+     print('Bot is ready')
+
+    @client.command(name='help')
+    async def help(ctx):
+        embed = discord.Embed(
+            title = 'Help',
+            description = 'List of All Commands'
+        )
+        
+        embed.set_footer(text=f'Requested by - {ctx.author}', icon_url=ctx.author.avatar_url)
+        embed.add_field(name = 'Music CMDS', value = '`play`, `leave`, `pause`, `resume`, `queue`, `remove`, `skip`, `loopsong`, `loopqueue`, `unloop`, `shuffle`')
+        await ctx.send(embed = embed)
+
 
 
     
