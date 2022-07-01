@@ -67,7 +67,7 @@ class Queue:
             self.repmode = 2
         else:
             raise InvalidArgument
-    
+
     def curr_song(self):
         '''
         Get the index of the current song in Queue\n
@@ -122,7 +122,7 @@ class Queue:
         self.pos = 0
         self.total=0
         self.repmode=0
-        
+
 
 class Player(commands.Cog):
     def __init__(self, ctx):
@@ -137,12 +137,12 @@ class Player(commands.Cog):
 
     def __del__(self):
         print("Player has been shut down")
-        
+
     async def store_song(self, ctx, inp_song):
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel and \
             msg.content in ("1","2","3","cancel", "Cancel", "c", "C")
-            
+
         if not valid_url(inp_song):
             inp_song = inp_song.replace(" ", "+")
             raw = request.urlopen("https://www.youtube.com/results?search_query=" + inp_song)
@@ -166,7 +166,7 @@ class Player(commands.Cog):
             song = pafy.new(video_ids[song_id])
         else:
             song = pafy.new(inp_song)
-        
+
         self.Queue.add_song(song)
         embed2 = discord.Embed(title="Song", description="Song **{0}** by *{1}* has been successfully queued!".format(song.title, song.author), color=0x00ffff)
         embed2.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
@@ -184,7 +184,7 @@ class Player(commands.Cog):
                     song = self.curr_song()
             except:
                 pass
-            
+
                # try:
             try: 
                 audio = song.getbestaudio()  # get audio source
@@ -192,17 +192,16 @@ class Player(commands.Cog):
                 source = FFmpegPCMAudio(audio.url, **FFMPEG_OPTIONS)  # converts the youtube audio source into a source discord can use
 
                 # Play music
+                voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
                 embed2 = discord.Embed(title="Playing Song!", description="Now playing: **{0}** by *{1}*".format(song.title, song.author), color=0x00ffff, url="https://www.youtube.com/watch?v={0}".format(song.videoid))
                 embed2.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
                 embed2.set_thumbnail(url=song.thumb)
                 embed2.set_footer(text="Duration: {0}".format(str(song.duration)))
                 await self.ctx.send(embed=embed2, mention_author=False)
-                voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
-                
             except:
                 pass
 
-            
+
             await self.next.wait()
             try:
                 self.Queue.next_song() 
@@ -212,7 +211,7 @@ class Player(commands.Cog):
                 embed3.set_footer(text="We hope you had fun!")
                 await self.ctx.send(embed=embed3, mention_author=False)
                 return self.destroy(self._guild)
-            
+
 
             '''        
                 except:
@@ -226,7 +225,7 @@ class Player(commands.Cog):
 
     def curr_song(self):
         return self.Queue._queue[self.Queue.pos] 
-       
+
     def set_loop_mode(self, mode):
         if mode not in (0,1,2):
 
@@ -273,6 +272,17 @@ class Music(commands.Cog):
         self.bot = bot
         self.players = {}
 
+    async def cleanup(self, guild):
+        try:
+            await guild.voice_client.disconnect()
+        except AttributeError:
+            pass
+
+        try:
+            del self.players[guild.id]
+        except KeyError:
+            pass
+
     def get_player(self, ctx): # Function I found pretty useful
         """Retrieve the guild player, or generate one."""
         try:
@@ -296,7 +306,7 @@ class Music(commands.Cog):
         voice = get(ctx.guild.voice_channels, name=channel.name)
         voice_client = get(self.bot.voice_clients, guild=ctx.guild)
         player = self.get_player(ctx)
-        
+
 
         # Check if our bot is currently in a voice call, if not, connect to call, if yes, move to call
         if voice_client == None:
@@ -305,8 +315,8 @@ class Music(commands.Cog):
                 await voice_client.move_to(channel)
 
         await player.store_song(ctx, search)
-        
-    
+
+
     @commands.command(pass_context=True, brief="Makes the bot leave your channel", aliases=['l'])
     async def leave(self, ctx):
         channel = ctx.message.author.voice.channel
@@ -390,7 +400,7 @@ class Music(commands.Cog):
             return await ctx.reply(embed=embed)
 
         await player.skip_to(idx)
-        
+
         await ctx.message.add_reaction("⏩")
 
     @commands.command(pass_context = True, brief='Displays the current Playlist/Queue', aliases=['playlist', 'q', 'plist', 'list'])
@@ -439,7 +449,7 @@ class Music(commands.Cog):
         embed = discord.Embed(title="Shuffling Track!", color=0x00ffff)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         await ctx.reply(embed=embed, mention_author=False)
-    
+
     @commands.command(pass_context = True, brief='Removes the song at the index', aliases=['rm', "del", "delete"])
     async def remove(self, ctx, pos):
         pos = int(pos) - 1
@@ -462,6 +472,6 @@ class Music(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
 
-    
+
 def setup(bot):
-    bot.add_cog(Music(bot))
+    bot.add_cog(Music(bot)) 
