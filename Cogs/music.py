@@ -23,6 +23,7 @@ class IndexOutOfBounds(commands.CommandError):
     pass
 
 
+
 def valid_url(query):
     url_re = re.compile(
         r'^(?:http|ftp)s?://' # http:// or https://
@@ -170,7 +171,6 @@ class Player(commands.Cog):
         embed2.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         embed2.set_footer(text="Called by: {0}".format(ctx.author.display_name))
         await ctx.reply(embed=embed2, mention_author=False)
-
         await self.play_songs()
 
     async def play_songs(self):
@@ -314,6 +314,7 @@ class Music(commands.Cog):
                 await voice_client.move_to(channel)
 
         await player.store_song(ctx, search)
+        
     
     @commands.command(pass_context=True, brief="Makes the bot leave your channel", aliases=['l'])
     async def leave(self, ctx):
@@ -468,7 +469,6 @@ class Music(commands.Cog):
         embed = discord.Embed(title="POS: {0} TOTAL: {0}".format((player.Queue.pos - 1), player.Queue.total), color=0x00ffff)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         await ctx.reply(embed=embed, mention_author=False)
-
 
 
     
