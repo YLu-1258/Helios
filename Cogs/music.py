@@ -132,7 +132,6 @@ class Player(commands.Cog):
         self.next = asyncio.Event()
         self.play_songs
         self._cog = ctx.cog
-        self.play_songs()
         ctx.bot.loop.create_task(self.play_songs())
 
     def __del__(self):
@@ -270,6 +269,7 @@ class Music(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.players = {}
+        self.self_aware = False
 
     async def cleanup(self, guild):
         try:
@@ -282,13 +282,19 @@ class Music(commands.Cog):
         except KeyError:
             pass
 
-    def get_player(self, ctx): # Function I found pretty useful
+    async def get_player(self, ctx): # Function I found pretty useful
         """Retrieve the guild player, or generate one."""
         try:
             player = self.players[ctx.guild.id]
+            if self.self_aware == False:
+                await player.play_songs()
+                self.self_aware == True
         except KeyError:
             player = Player(ctx)
             self.players[ctx.guild.id] = player
+            if self.self_aware == False:
+                await player.play_songs()
+                self.self_aware == True
 
         return player
 
