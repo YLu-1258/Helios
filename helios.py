@@ -4,7 +4,7 @@ from pathlib import Path
 
 class Helios(commands.Bot):
     def __init__(self):
-        super().__init__(command_prefix=".")
+        super().__init__(command_prefix=".", help_command=None)
         self._cogs = [path.stem for path in Path("./Cogs").glob("*.py")]
     
     def load_cogs(self):    

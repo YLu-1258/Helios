@@ -172,8 +172,6 @@ class Player(commands.Cog):
         embed2.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         embed2.set_footer(text="Called by: {0}".format(ctx.author.display_name))
         await ctx.reply(embed=embed2, mention_author=False)
-        if not self.self_aware:
-            await self.play_songs()
 
     async def play_songs(self):
         # Wait until song finishes to run self.Queue.next_song()
@@ -317,6 +315,9 @@ class Music(commands.Cog):
                 await voice_client.move_to(channel)
 
         await player.store_song(ctx, search)
+
+        if player.self_aware == False:
+            await player.play_songs()
         
     
     @commands.command(pass_context=True, brief="Makes the bot leave your channel", aliases=['l'])
