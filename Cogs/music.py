@@ -132,6 +132,7 @@ class Player(commands.Cog):
         self.next = asyncio.Event()
         self.play_songs
         self._cog = ctx.cog
+        self.self_aware = False
         ctx.bot.loop.create_task(self.play_songs())
 
     def __del__(self):
@@ -171,11 +172,13 @@ class Player(commands.Cog):
         embed2.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         embed2.set_footer(text="Called by: {0}".format(ctx.author.display_name))
         await ctx.reply(embed=embed2, mention_author=False)
-        await self.play_songs()
+        if not self.self_aware:
+            await self.play_songs()
 
     async def play_songs(self):
         # Wait until song finishes to run self.Queue.next_song()
         voice_client = get(self.bot.voice_clients, guild=self.ctx.guild)
+        self.self_aware = True
         while not self.bot.is_closed(): #self.Queue._queue:
             self.next.clear()
             try:
