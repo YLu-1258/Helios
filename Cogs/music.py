@@ -130,7 +130,6 @@ class Player(commands.Cog):
         self._guild = ctx.guild
         self.Queue = Queue()
         self.next = asyncio.Event()
-        self.play_songs
         self._cog = ctx.cog
         ctx.bot.loop.create_task(self.play_songs())
 
