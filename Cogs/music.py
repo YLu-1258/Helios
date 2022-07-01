@@ -23,6 +23,7 @@ class IndexOutOfBounds(commands.CommandError):
     pass
 
 
+
 def valid_url(query):
     url_re = re.compile(
         r'^(?:http|ftp)s?://' # http:// or https://
@@ -171,7 +172,6 @@ class Player(commands.Cog):
         embed2.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         embed2.set_footer(text="Called by: {0}".format(ctx.author.display_name))
         await ctx.reply(embed=embed2, mention_author=False)
-
         await self.play_songs()
 
     async def play_songs(self):
@@ -192,13 +192,13 @@ class Player(commands.Cog):
                 source = FFmpegPCMAudio(audio.url, **FFMPEG_OPTIONS)  # converts the youtube audio source into a source discord can use
 
                 # Play music
-                
                 embed2 = discord.Embed(title="Playing Song!", description="Now playing: **{0}** by *{1}*".format(song.title, song.author), color=0x00ffff, url="https://www.youtube.com/watch?v={0}".format(song.videoid))
                 embed2.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
                 embed2.set_thumbnail(url=song.thumb)
                 embed2.set_footer(text="Duration: {0}".format(str(song.duration)))
                 await self.ctx.send(embed=embed2, mention_author=False)
                 voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
+                
             except:
                 pass
 
@@ -273,17 +273,6 @@ class Music(commands.Cog):
         self.bot = bot
         self.players = {}
 
-    async def cleanup(self, guild):
-        try:
-            await guild.voice_client.disconnect()
-        except AttributeError:
-            pass
-
-        try:
-            del self.players[guild.id]
-        except KeyError:
-            pass
-
     def get_player(self, ctx): # Function I found pretty useful
         """Retrieve the guild player, or generate one."""
         try:
@@ -316,6 +305,7 @@ class Music(commands.Cog):
                 await voice_client.move_to(channel)
 
         await player.store_song(ctx, search)
+        
     
     @commands.command(pass_context=True, brief="Makes the bot leave your channel", aliases=['l'])
     async def leave(self, ctx):
@@ -470,18 +460,6 @@ class Music(commands.Cog):
         embed = discord.Embed(title="POS: {0} TOTAL: {0}".format((player.Queue.pos - 1), player.Queue.total), color=0x00ffff)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         await ctx.reply(embed=embed, mention_author=False)
-
-    @commands.command(pass_context = True, brief = 'All commands for bot', aliases = ['h'])
-    async def help(ctx):
-        embed = discord.Embed(
-            title = 'Help',
-            description = 'List of All Commands'
-        )
-        
-        embed.set_footer(text=f'Requested by - {ctx.author}', icon_url=ctx.author.avatar_url)
-        embed.add_field(name = 'Music CMDS', value = '`play`, `leave`, `pause`, `resume`, `queue`, `remove`, `skip`, `loopsong`, `loopqueue`, `unloop`, `shuffle`')
-        await ctx.send(embed = embed)
-
 
 
     
