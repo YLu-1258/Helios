@@ -470,6 +470,17 @@ class Music(commands.Cog):
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         await ctx.reply(embed=embed, mention_author=False)
 
+    @commands.command(pass_context = True, brief = 'All commands for bot', aliases = ['h'])
+    async def help(ctx):
+        embed = discord.Embed(
+            title = 'Help',
+            description = 'List of All Commands'
+        )
+        
+        embed.set_footer(text=f'Requested by - {ctx.author}', icon_url=ctx.author.avatar_url)
+        embed.add_field(name = 'Music CMDS', value = '`play`, `leave`, `pause`, `resume`, `queue`, `remove`, `skip`, `loopsong`, `loopqueue`, `unloop`, `shuffle`')
+        await ctx.send(embed = embed)
+
 
 
     
