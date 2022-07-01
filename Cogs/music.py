@@ -172,10 +172,12 @@ class Player(commands.Cog):
         embed2.set_footer(text="Called by: {0}".format(ctx.author.display_name))
         await ctx.reply(embed=embed2, mention_author=False)
 
+        await self.play_songs()
+
     async def play_songs(self):
         # Wait until song finishes to run self.Queue.next_song()
         voice_client = get(self.bot.voice_clients, guild=self.ctx.guild)
-        while not self.bot.is_closed() and self.Queue._queue: #self.Queue._queue:
+        while not self.bot.is_closed(): #self.Queue._queue:
             self.next.clear()
             try:
                 async with timeout(300):
@@ -269,7 +271,6 @@ class Music(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.players = {}
-        self.self_aware = False
 
     async def cleanup(self, guild):
         try:
@@ -282,19 +283,13 @@ class Music(commands.Cog):
         except KeyError:
             pass
 
-    async def get_player(self, ctx): # Function I found pretty useful
+    def get_player(self, ctx): # Function I found pretty useful
         """Retrieve the guild player, or generate one."""
         try:
             player = self.players[ctx.guild.id]
-            if self.self_aware == False:
-                await player.play_songs()
-                self.self_aware == True
         except KeyError:
             player = Player(ctx)
             self.players[ctx.guild.id] = player
-            if self.self_aware == False:
-                await player.play_songs()
-                self.self_aware == True
 
         return player
 
