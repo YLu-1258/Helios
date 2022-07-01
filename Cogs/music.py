@@ -172,7 +172,6 @@ class Player(commands.Cog):
         embed2.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         embed2.set_footer(text="Called by: {0}".format(ctx.author.display_name))
         await ctx.reply(embed=embed2, mention_author=False)
-        await self.play_songs()
 
     async def play_songs(self):
         # Wait until song finishes to run self.Queue.next_song()
@@ -311,6 +310,7 @@ class Music(commands.Cog):
         # Check if our bot is currently in a voice call, if not, connect to call, if yes, move to call
         if voice_client == None:
                 voice_client = await voice.connect()
+                await player.play_songs()
         else:
                 await voice_client.move_to(channel)
 
