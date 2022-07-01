@@ -191,12 +191,13 @@ class Player(commands.Cog):
                 source = FFmpegPCMAudio(audio.url, **FFMPEG_OPTIONS)  # converts the youtube audio source into a source discord can use
 
                 # Play music
-                voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
                 embed2 = discord.Embed(title="Playing Song!", description="Now playing: **{0}** by *{1}*".format(song.title, song.author), color=0x00ffff, url="https://www.youtube.com/watch?v={0}".format(song.videoid))
                 embed2.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
                 embed2.set_thumbnail(url=song.thumb)
                 embed2.set_footer(text="Duration: {0}".format(str(song.duration)))
                 await self.ctx.send(embed=embed2, mention_author=False)
+                voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
+                
             except:
                 pass
 
@@ -270,17 +271,6 @@ class Music(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.players = {}
-
-    async def cleanup(self, guild):
-        try:
-            await guild.voice_client.disconnect()
-        except AttributeError:
-            pass
-
-        try:
-            del self.players[guild.id]
-        except KeyError:
-            pass
 
     def get_player(self, ctx): # Function I found pretty useful
         """Retrieve the guild player, or generate one."""
