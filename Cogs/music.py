@@ -132,7 +132,7 @@ class Player(commands.Cog):
         self.next = asyncio.Event()
         self.play_songs
         self._cog = ctx.cog
-        self.self_aware = False
+        self.play_songs()
         ctx.bot.loop.create_task(self.play_songs())
 
     def __del__(self):
@@ -176,8 +176,7 @@ class Player(commands.Cog):
     async def play_songs(self):
         # Wait until song finishes to run self.Queue.next_song()
         voice_client = get(self.bot.voice_clients, guild=self.ctx.guild)
-        self.self_aware = True
-        while not self.bot.is_closed(): #self.Queue._queue:
+        while not self.bot.is_closed() and self.Queue._queue: #self.Queue._queue:
             self.next.clear()
             try:
                 async with timeout(300):
@@ -315,10 +314,6 @@ class Music(commands.Cog):
                 await voice_client.move_to(channel)
 
         await player.store_song(ctx, search)
-
-        if player.self_aware == False:
-            await player.play_songs()
-        
     
     @commands.command(pass_context=True, brief="Makes the bot leave your channel", aliases=['l'])
     async def leave(self, ctx):
@@ -473,23 +468,6 @@ class Music(commands.Cog):
         embed = discord.Embed(title="POS: {0} TOTAL: {0}".format((player.Queue.pos - 1), player.Queue.total), color=0x00ffff)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         await ctx.reply(embed=embed, mention_author=False)
-
-    client = commands.Bot(command_prefix=".",help_command = None)
-
-    @client.event
-    async def on_ready():
-     print('Bot is ready')
-
-    @client.command(name='help')
-    async def help(ctx):
-        embed = discord.Embed(
-            title = 'Help',
-            description = 'List of All Commands'
-        )
-        
-        embed.set_footer(text=f'Requested by - {ctx.author}', icon_url=ctx.author.avatar_url)
-        embed.add_field(name = 'Music CMDS', value = '`play`, `leave`, `pause`, `resume`, `queue`, `remove`, `skip`, `loopsong`, `loopqueue`, `unloop`, `shuffle`')
-        await ctx.send(embed = embed)
 
 
 
