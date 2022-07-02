@@ -26,4 +26,5 @@ class Helios(commands.Bot):
     
 
 bot = Helios()
+bot.remove_command('help')
 bot.run()
