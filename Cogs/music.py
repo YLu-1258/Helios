@@ -420,9 +420,9 @@ class Music(commands.Cog):
         pos = int(pos) - 1
         player = self.get_player(ctx)
         try:
-            embed = discord.Embed(title="Remove Song", description="Song {0} by {1} has been removed".format(player.Queue._queue[pos].title, player.Queue._queue[pos].author), color=0x00ffff)
+            embed = discord.Embed(title="Remove Song", description="Song **{0}** by *{1}* has been removed".format(player.Queue._queue[pos].title, player.Queue._queue[pos].author), color=0x00ffff)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            player.remove(pos)
+            await player.remove(pos)
             await ctx.reply(embed=embed, mention_author=False)
         except:
             embed = discord.Embed(title="Error", description="Invalid Input!", color="0xff0000")
