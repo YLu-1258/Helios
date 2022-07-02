@@ -221,8 +221,9 @@ class Player(commands.Cog):
         return self.bot.loop.create_task(self._cog.cleanup(guild))
 
     async def skip_to(self, pos):
-        self._guild.voice_client.stop
         self.Queue.pos = pos
+        self._guild.voice_client.stop
+        
 
     async def remove(self, pos):
         pos-=1
