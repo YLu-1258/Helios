@@ -185,14 +185,7 @@ class Player(commands.Cog):
                 embed3.set_footer(text="We hope you had fun!")
                 await self.ctx.send(embed=embed3, mention_author=False)
                 return self.destroy(self._guild)
-
-            '''        
-                except:
-                    embed3 = discord.Embed(title="Uh oh! ", description="Something went wrong", color=0xff0000)
-                    embed3.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
-                    embed3.set_footer(text="Please try again later!")
-                    await self.ctx.reply(embed=embed3, mention_author=False)
-            '''
+        self.not_playing = True
 
     def curr_song(self):
         return self.Queue._queue[self.Queue.pos] 
@@ -228,10 +221,8 @@ class Player(commands.Cog):
         return self.bot.loop.create_task(self._cog.cleanup(guild))
 
     async def skip_to(self, pos):
-        vc = self.ctx.voice_client
-        vc.stop
+        self._guild.voice_client.stop
         self.Queue.pos = pos
-        await self.play_songs()
 
     async def remove(self, pos):
         pos-=1
