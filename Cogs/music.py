@@ -39,7 +39,6 @@ class Queue:
     def __init__(self):
         self._queue = [] # _ in front of variable is to represent a private var
         self.pos = 0 # Current position in track, return to Player object to get hte track ideal for playing
-        self.total = 0 # Used as a QoL var, return total number of songs when "".queue list" is called
         self.repmode = 0 # what repeating mode we want, 0 - no repeating, 1- loop song, 2-loop whole queue
 
     def add_song(self, arg):
@@ -47,13 +46,7 @@ class Queue:
         Add a song to the queue\n
         '''
         self._queue.append(arg)
-        self.total += 1
 
-    def get_len(self):
-        '''
-        Total number of songs in queue\n
-        '''
-        return self.total
 
     def set_loop(self, mode):
         '''
@@ -67,12 +60,14 @@ class Queue:
             self.repmode = 2
         else:
             raise InvalidArgument
-
+    
     def curr_song(self):
         '''
         Get the index of the current song in Queue\n
         '''
-        return self.pos
+        if self._queue:
+            return self.pos
+        raise ShortQueue
 
     def next_song(self):
         '''
@@ -87,12 +82,8 @@ class Queue:
                                    end of queue, wrap back to idx 0 when last \n
                                    song finishes playing\n
         '''
-        if len(self._queue) == 0:
-            raise ShortQueue
-        if self.pos < 0: # ensure that position is never negative
-            self.pos = 0
         if self.repmode == 0:
-            if self.pos < (self.total):
+            if self.pos < (len(self._queue)-1):
                 self.pos += 1
                 print("REPMODE 0: ADDED TO POS")
             else:
@@ -100,19 +91,13 @@ class Queue:
         elif self.repmode == 1:
             pass
         elif self.repmode == 2:
-            if self.pos < (self.total):
+            if self.pos < (len(self._queue)-1):
                 self.pos += 1
                 print("REPMODE 2: ADDED TO POS")
             else:
                 self.pos = 0 #loop back to first song
                 print("REPMODE 2: LOOPBACK")
 
-    def goto(self, idx):
-        '''
-        Set position variable to ideal value\n
-        Use for SkipTo command
-        '''
-        self.pos = idx
 
     def clear(self):
         '''
@@ -120,9 +105,7 @@ class Queue:
         '''
         self._queue.clear()
         self.pos = 0
-        self.total=0
-        self.repmode=0
-
+        self.repmode=0        
 
 class Player(commands.Cog):
     def __init__(self, ctx):
@@ -132,17 +115,18 @@ class Player(commands.Cog):
         self.Queue = Queue()
         self.next = asyncio.Event()
         self.play_songs
+        self.not_playing = True
+        self.current = None
         self._cog = ctx.cog
-        ctx.bot.loop.create_task(self.play_songs())
 
     def __del__(self):
         print("Player has been shut down")
-
+        
     async def store_song(self, ctx, inp_song):
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel and \
             msg.content in ("1","2","3","cancel", "Cancel", "c", "C")
-
+            
         if not valid_url(inp_song):
             inp_song = inp_song.replace(" ", "+")
             raw = request.urlopen("https://www.youtube.com/results?search_query=" + inp_song)
@@ -166,51 +150,41 @@ class Player(commands.Cog):
             song = pafy.new(video_ids[song_id])
         else:
             song = pafy.new(inp_song)
-
+        
         self.Queue.add_song(song)
         embed2 = discord.Embed(title="Song", description="Song **{0}** by *{1}* has been successfully queued!".format(song.title, song.author), color=0x00ffff)
         embed2.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         embed2.set_footer(text="Called by: {0}".format(ctx.author.display_name))
         await ctx.reply(embed=embed2, mention_author=False)
+        
 
     async def play_songs(self):
         # Wait until song finishes to run self.Queue.next_song()
-        voice_client = get(self.bot.voice_clients, guild=self.ctx.guild)
-        while not self.bot.is_closed(): #self.Queue._queue:
+        await self.bot.wait_until_ready()
+        self.not_playing = False
+        while self.Queue._queue:
             self.next.clear()
             try:
-                async with timeout(300):
-                    song = self.curr_song()
-            except:
-                pass
-
-               # try:
-            try: 
+                song = self.curr_song()
                 audio = song.getbestaudio()  # get audio source
-
                 source = FFmpegPCMAudio(audio.url, **FFMPEG_OPTIONS)  # converts the youtube audio source into a source discord can use
-
                 # Play music
-                voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
+                self.current = source
                 embed2 = discord.Embed(title="Playing Song!", description="Now playing: **{0}** by *{1}*".format(song.title, song.author), color=0x00ffff, url="https://www.youtube.com/watch?v={0}".format(song.videoid))
                 embed2.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
                 embed2.set_thumbnail(url=song.thumb)
                 embed2.set_footer(text="Duration: {0}".format(str(song.duration)))
-                await self.ctx.send(embed=embed2, mention_author=False)
-            except:
-                pass
-
-
-            await self.next.wait()
-            try:
-                self.Queue.next_song() 
+                self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
+                await self.ctx.send(embed=embed2)
+                await self.next.wait()
+                self.current = None
+                self.Queue.next_song()
             except ShortQueue:
-                embed3 = discord.Embed(title="Uh oh! ", description="The Queue has Ended, Player will now terminate, POS: {0}, Total {1}".format(self.Queue.pos, self.Queue.total), color=0xff0000)
+                embed3 = discord.Embed(title="Uh oh! ", description="The Queue has Ended, Player will now terminate, POS: {0}, Total {1}".format(self.Queue.pos, len(self.Queue._queue)), color=0xff0000)
                 embed3.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
                 embed3.set_footer(text="We hope you had fun!")
                 await self.ctx.send(embed=embed3, mention_author=False)
                 return self.destroy(self._guild)
-
 
             '''        
                 except:
@@ -219,8 +193,6 @@ class Player(commands.Cog):
                     embed3.set_footer(text="Please try again later!")
                     await self.ctx.reply(embed=embed3, mention_author=False)
             '''
-
-
 
     def curr_song(self):
         return self.Queue._queue[self.Queue.pos] 
@@ -305,18 +277,20 @@ class Music(commands.Cog):
         voice = get(ctx.guild.voice_channels, name=channel.name)
         voice_client = get(self.bot.voice_clients, guild=ctx.guild)
         player = self.get_player(ctx)
-
+        
 
         # Check if our bot is currently in a voice call, if not, connect to call, if yes, move to call
         if voice_client == None:
                 voice_client = await voice.connect()
-                await player.play_songs()
         else:
                 await voice_client.move_to(channel)
 
         await player.store_song(ctx, search)
 
-
+        if player.not_playing:
+            await player.play_songs()
+        
+    
     @commands.command(pass_context=True, brief="Makes the bot leave your channel", aliases=['l'])
     async def leave(self, ctx):
         channel = ctx.message.author.voice.channel
@@ -400,7 +374,7 @@ class Music(commands.Cog):
             return await ctx.reply(embed=embed)
 
         await player.skip_to(idx)
-
+        
         await ctx.message.add_reaction("⏩")
 
     @commands.command(pass_context = True, brief='Displays the current Playlist/Queue', aliases=['playlist', 'q', 'plist', 'list'])
@@ -449,7 +423,7 @@ class Music(commands.Cog):
         embed = discord.Embed(title="Shuffling Track!", color=0x00ffff)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         await ctx.reply(embed=embed, mention_author=False)
-
+    
     @commands.command(pass_context = True, brief='Removes the song at the index', aliases=['rm', "del", "delete"])
     async def remove(self, ctx, pos):
         pos = int(pos) - 1
@@ -472,6 +446,6 @@ class Music(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
 
-
+    
 def setup(bot):
-    bot.add_cog(Music(bot)) 
+    bot.add_cog(Music(bot))
