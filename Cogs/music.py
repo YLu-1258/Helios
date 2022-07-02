@@ -176,7 +176,8 @@ class Player(commands.Cog):
                 embed2.set_thumbnail(url=self._song.thumb)
                 embed2.set_footer(text="Duration: {0}".format(str(self._song.duration)))
                 self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
-                await self.ctx.send(embed=embed2)
+                if self.Queue.repmode != 1:
+                    await self.ctx.send(embed=embed2)
                 await self.next.wait()
                 self.current = None
                 self.Queue.next_song()
