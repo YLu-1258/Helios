@@ -1,3 +1,4 @@
+import email
 import discord
 from urllib import request
 import re
@@ -165,15 +166,15 @@ class Player(commands.Cog):
         while self.Queue._queue:
             self.next.clear()
             try:
-                song = self.curr_song()
-                audio = song.getbestaudio()  # get audio source
+                self._song = self.curr_song()
+                audio = self._song.getbestaudio()  # get audio source
                 source = FFmpegPCMAudio(audio.url, **FFMPEG_OPTIONS)  # converts the youtube audio source into a source discord can use
                 # Play music
                 self.current = source
-                embed2 = discord.Embed(title="Playing Song!", description="Now playing: **{0}** by *{1}*".format(song.title, song.author), color=0x00ffff, url="https://www.youtube.com/watch?v={0}".format(song.videoid))
+                embed2 = discord.Embed(title="Playing Song!", description="Now playing: **{0}** by *{1}*".format(self._song.title, self._song.author), color=0x00ffff, url="https://www.youtube.com/watch?v={0}".format(self._song.videoid))
                 embed2.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
-                embed2.set_thumbnail(url=song.thumb)
-                embed2.set_footer(text="Duration: {0}".format(str(song.duration)))
+                embed2.set_thumbnail(url=self._song.thumb)
+                embed2.set_footer(text="Duration: {0}".format(str(self._song.duration)))
                 self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
                 await self.ctx.send(embed=embed2)
                 await self.next.wait()
@@ -211,8 +212,16 @@ class Player(commands.Cog):
         content = tracklist[page-1]
         embed = discord.Embed(title="Playlist ", description=content, color=0xfd00f5)
         embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
-        embed.set_footer(text="Currently displaying page {}".format(str(page)))
+        embed.set_footer(text="Currently displaying page {0}\n".format(str(page)))
         await self.ctx.reply(embed=embed, mention_author=False)
+
+    async def currently_playing(self):
+        embed = discord.Embed(title="Playlist", description="Currently playing: **{0}** by *{1}*".format(self._song.title, self._song.author), color=0xfd00f5)
+        embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+        embed.add_field(name="Like it? Save it here", value='[Click here to go to song]( https://www.youtube.com/watch?v={0} )'.format(self._song.videoid), inline=False)
+        embed.set_image(url=self._song.thumb)
+        await self.ctx.reply(embed=embed, mention_author=False)
+        
 
     def destroy(self, guild):
         """Disconnect and cleanup the player."""
@@ -225,7 +234,6 @@ class Player(commands.Cog):
         
 
     async def remove(self, pos):
-        pos-=1
         self.Queue._queue.pop(pos)
 
 class Music(commands.Cog):
@@ -337,7 +345,7 @@ class Music(commands.Cog):
         vc.resume()
         await ctx.message.add_reaction("⏯️")
 
-    @commands.command(pass_context = True, brief='Stops the current track', aliases=['st', 'stp'])
+    @commands.command(pass_context = True, brief='Stops the current track', aliases=['st', 'stp', "skip", "sk"])
     async def stop(self, ctx):
         """Stops the currently playing song."""
         vc = ctx.voice_client
@@ -351,22 +359,6 @@ class Music(commands.Cog):
 
         vc.stop()
         await ctx.message.add_reaction("⏹️")
-
-    @commands.command(pass_context = True, brief='Skip to a track index', aliases=['sk', 'ski'])
-    async def skip(self, ctx, *, idx=1):
-        """Stops the currently playing song."""
-        idx = int(idx)
-        vc = ctx.voice_client
-        player = self.get_player(ctx)
-        if not vc or not vc.is_connected():
-            embed = discord.Embed(title="Uh Oh!", description="I'm not connected to a voice channel or there are no currently playing songs", color=0xff0000)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            embed.set_footer(text="Please try again with a song")
-            return await ctx.reply(embed=embed)
-
-        await player.skip_to(idx)
-        
-        await ctx.message.add_reaction("⏩")
 
     @commands.command(pass_context = True, brief='Displays the current Playlist/Queue', aliases=['playlist', 'q', 'plist', 'list'])
     async def queue(self, ctx, *, page=1):
@@ -412,6 +404,7 @@ class Music(commands.Cog):
     async def shuffle(self, ctx):
         player = self.get_player(ctx)
         random.shuffle(player.Queue._queue)
+        
         embed = discord.Embed(title="Shuffling Track!", color=0x00ffff)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         await ctx.reply(embed=embed, mention_author=False)
@@ -421,7 +414,7 @@ class Music(commands.Cog):
         pos = int(pos) - 1
         player = self.get_player(ctx)
         try:
-            embed = discord.Embed(title="Remove Song", description="Song **{0}** by *{1}* has been removed".format(player.Queue._queue[pos].title, player.Queue._queue[pos].author), color=0x00ffff)
+            embed = discord.Embed(title="Removing Song", description="Song **{0}** by *{1}* has been removed".format(player.Queue._queue[pos].title, player.Queue._queue[pos].author), color=0x00ffff)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             await player.remove(pos)
             await ctx.reply(embed=embed, mention_author=False)
@@ -430,12 +423,18 @@ class Music(commands.Cog):
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             await ctx.reply(embed=embed)
 
-    @commands.command(pass_context = True, brief='DEBUG: Gets position and total of queue', aliases=['pos'])
-    async def get_pos(self, ctx):
+    @commands.command(pass_context = True, brief='Shows currently playing song', aliases=["current_playing",'current',"curr", "cur"])
+    async def current_song(self, ctx):
         player = self.get_player(ctx)
-        embed = discord.Embed(title="POS: {0} TOTAL: {0}".format((player.Queue.pos - 1), len(player.Queue._queue)), color=0x00ffff)
-        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-        await ctx.reply(embed=embed, mention_author=False)
+        if player.Queue._queue:
+            await player.currently_playing()
+        else:
+            embed = discord.Embed(title="Uh Oh!", description="I'm not connected to a voice channel or there are no currently playing songs", color=0xff0000)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_footer(text="Please try again with a song")
+            return await ctx.reply(embed=embed)
+
+
 
 
     
