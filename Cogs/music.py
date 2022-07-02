@@ -185,7 +185,6 @@ class Player(commands.Cog):
                 embed3.set_footer(text="We hope you had fun!")
                 await self.ctx.send(embed=embed3, mention_author=False)
                 return self.destroy(self._guild)
-        self.not_playing = True
 
     def curr_song(self):
         return self.Queue._queue[self.Queue.pos] 
@@ -222,7 +221,7 @@ class Player(commands.Cog):
 
     async def skip_to(self, pos):
         self.Queue.pos = pos
-        self._guild.voice_client.stop
+        self._guild.voice_client.stop()
         
 
     async def remove(self, pos):
@@ -433,7 +432,7 @@ class Music(commands.Cog):
     @commands.command(pass_context = True, brief='DEBUG: Gets position and total of queue', aliases=['pos'])
     async def get_pos(self, ctx):
         player = self.get_player(ctx)
-        embed = discord.Embed(title="POS: {0} TOTAL: {0}".format((player.Queue.pos - 1), player.Queue.total), color=0x00ffff)
+        embed = discord.Embed(title="POS: {0} TOTAL: {0}".format((player.Queue.pos - 1), len(player.Queue._queue)), color=0x00ffff)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         await ctx.reply(embed=embed, mention_author=False)
 
