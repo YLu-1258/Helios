@@ -398,6 +398,7 @@ class Music(commands.Cog):
         embed = discord.Embed(title="Looping Track!", color=0x00ffff)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         await ctx.reply(embed=embed, mention_author=False)
+        #loops track
 
     @commands.command(pass_context = True, brief='unloops the track or song', aliases=['unloop','unloopsong','unlooptrack', "ul", "uls", ])
     async def un_loop(self, ctx):
