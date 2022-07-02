@@ -17,7 +17,7 @@ FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconne
 class InvalidArgument(commands.CommandError):
     pass
 
-class ShortQueue(commands.CommandError):
+class EndOfQueue(commands.CommandError):
     pass
 
 class IndexOutOfBounds(commands.CommandError):
@@ -68,7 +68,7 @@ class Queue:
         '''
         if self._queue:
             return self.pos
-        raise ShortQueue
+        raise EndOfQueue
 
     def next_song(self):
         '''
@@ -88,7 +88,7 @@ class Queue:
                 self.pos += 1
                 print("REPMODE 0: ADDED TO POS")
             else:
-                raise ShortQueue
+                raise EndOfQueue
         elif self.repmode == 1:
             pass
         elif self.repmode == 2:
@@ -139,13 +139,13 @@ class Player(commands.Cog):
             embed1 = discord.Embed(title="Please select a song", description=track_list, color=0x00ffff)
             embed1.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             embed1.set_footer(text="Pick an Index 1-3.")
-            await ctx.reply(embed=embed1, mention_author=False)
+            await ctx.send(embed=embed1, mention_author=False)
             msg = await self.bot.wait_for("message", check=check)
             if msg.content in ("cancel", "Cancel", "c", "C"):
                 embed1 = discord.Embed(title="Cancelling song selection", description="Please try again", color=0xff0000)
                 embed1.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
                 embed1.set_footer(text="Called by {0}".format(ctx.author.display_name))
-                await ctx.reply(embed=embed1, mention_author=False)
+                await ctx.send(embed=embed1, mention_author=False)
                 return
             song_id = int(msg.content)-1
             song = pafy.new(video_ids[song_id])
@@ -156,7 +156,7 @@ class Player(commands.Cog):
         embed2 = discord.Embed(title="Song", description="Song **{0}** by *{1}* has been successfully queued!".format(song.title, song.author), color=0x00ffff)
         embed2.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         embed2.set_footer(text="Called by: {0}".format(ctx.author.display_name))
-        await ctx.reply(embed=embed2, mention_author=False)
+        await ctx.send(embed=embed2, mention_author=False)
         
 
     async def play_songs(self):
@@ -181,7 +181,7 @@ class Player(commands.Cog):
                 await self.next.wait()
                 self.current = None
                 self.Queue.next_song()
-            except ShortQueue:
+            except EndOfQueue:
                 embed3 = discord.Embed(title="Uh oh! ", description="The Queue has Ended, Player will now terminate, POS: {0}, Total {1}".format(self.Queue.pos, len(self.Queue._queue)), color=0xff0000)
                 embed3.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
                 embed3.set_footer(text="We hope you had fun!")
@@ -214,14 +214,14 @@ class Player(commands.Cog):
         embed = discord.Embed(title="Playlist ", description=content, color=0xfd00f5)
         embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
         embed.set_footer(text="Currently displaying page {0}\n".format(str(page)))
-        await self.ctx.reply(embed=embed, mention_author=False)
+        await self.ctx.send(embed=embed, mention_author=False)
 
     async def currently_playing(self):
         embed = discord.Embed(title="Playlist", description="Currently playing: **{0}** by *{1}*".format(self._song.title, self._song.author), color=0xfd00f5)
         embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
         embed.add_field(name="Like it? Save it here", value='[Click here to go to song]( https://www.youtube.com/watch?v={0} )'.format(self._song.videoid), inline=False)
         embed.set_image(url=self._song.thumb)
-        await self.ctx.reply(embed=embed, mention_author=False)
+        await self.ctx.send(embed=embed, mention_author=False)
         
 
     def destroy(self, guild):
@@ -269,7 +269,7 @@ class Music(commands.Cog):
         """Plays a song"""
         channel = ctx.message.author.voice
         if not channel:
-            await ctx.reply("Join a voice channel before you use this command")
+            await ctx.send("Join a voice channel before you use this command")
             return
 
         # Get information about voice call 
@@ -297,20 +297,20 @@ class Music(commands.Cog):
         channelid = ctx.message.author.voice.channel.id
         bot_channel = ctx.guild.me.voice.channel.id
         if bot_channel != channelid:
-            await ctx.reply("You are not in my channel")
+            await ctx.send("You are not in my channel")
             return
         elif not channel:
-            await ctx.reply("You are not in a channel")
+            await ctx.send("You are not in a channel")
             return
         if not channel:
-            await ctx.reply("I am not in a voice channel")
+            await ctx.send("I am not in a voice channel")
             return
         voice = get(self.bot.voice_clients, guild=ctx.guild)
         if voice and voice.is_connected():
             await voice.disconnect()
-            await ctx.reply(f"Left {channel}")
+            await ctx.send(f"Left {channel}")
         else:
-            await ctx.reply("I am not in a voice channel")
+            await ctx.send("I am not in a voice channel")
 
 
     @commands.command(pass_context=True, brief='Pauses the currently playing music', aliases=['pa'])
@@ -322,7 +322,7 @@ class Music(commands.Cog):
             embed = discord.Embed(title="Uh Oh!", description="I am currently not playing anything", color=0xff0000)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             embed.set_footer(text="Please try again with a song")
-            return await ctx.reply(embed=embed)
+            return await ctx.send(embed=embed)
         elif vc.is_paused():
             return
 
@@ -339,7 +339,7 @@ class Music(commands.Cog):
             embed = discord.Embed(title="Uh Oh!", description="I'm not connected to a voice channel or there are no currently playing songs", color=0xff0000)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             embed.set_footer(text="Please try again with a song")
-            return await ctx.reply(embed=embed)
+            return await ctx.send(embed=embed)
         elif not vc.is_paused():
             return
 
@@ -355,7 +355,7 @@ class Music(commands.Cog):
             embed = discord.Embed(title="Uh Oh!", description="I'm not connected to a voice channel or there are no currently playing songs", color=0xff0000)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             embed.set_footer(text="Please try again with a song")
-            return await ctx.reply(embed=embed)
+            return await ctx.send(embed=embed)
 
 
         vc.stop()
@@ -370,7 +370,7 @@ class Music(commands.Cog):
             embed = discord.Embed(title="Error", description="Please Give me a number!", color="0xff0000")
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             embed.set_thumbnail(url=player.Queue._queue[player.Queue.pos].thumb)
-            await ctx.reply(embed=embed)
+            await ctx.send(embed=embed)
         player = self.get_player(ctx)
         await player.print_queue(page)
 
@@ -382,7 +382,7 @@ class Music(commands.Cog):
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         embed.set_thumbnail(url=player.Queue._queue[player.Queue.pos].thumb)
         embed.set_footer(text="Duration: {0}".format(str(player.Queue._queue[player.Queue.pos].duration)))
-        await ctx.reply(embed=embed, mention_author=False)
+        await ctx.send(embed=embed, mention_author=False)
 
     @commands.command(pass_context = True, brief='Loops the entire track/queue', aliases=['looptrack','loopqueue','loopall', "lt", "lq", "la"])
     async def loop_track(self, ctx):
@@ -390,7 +390,7 @@ class Music(commands.Cog):
         player.Queue.repmode = 2
         embed = discord.Embed(title="Looping Track!", color=0x00ffff)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-        await ctx.reply(embed=embed, mention_author=False)
+        await ctx.send(embed=embed, mention_author=False)
         #loops track
 
     @commands.command(pass_context = True, brief='unloops the track or song', aliases=['unloop','unloopsong','unlooptrack', "ul", "uls", ])
@@ -399,7 +399,7 @@ class Music(commands.Cog):
         player.Queue.repmode = 0
         embed = discord.Embed(title="Unlooping Song/Track!", color=0x00ffff)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-        await ctx.reply(embed=embed, mention_author=False)
+        await ctx.send(embed=embed, mention_author=False)
 
     @commands.command(pass_context = True, brief='shuffles track', aliases=['shuffletrack','shuffleall'])
     async def shuffle(self, ctx):
@@ -408,7 +408,7 @@ class Music(commands.Cog):
         
         embed = discord.Embed(title="Shuffling Track!", color=0x00ffff)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-        await ctx.reply(embed=embed, mention_author=False)
+        await ctx.send(embed=embed, mention_author=False)
     
     @commands.command(pass_context = True, brief='Removes the song at the index', aliases=['rm', "del", "delete"])
     async def remove(self, ctx, pos):
@@ -418,11 +418,11 @@ class Music(commands.Cog):
             embed = discord.Embed(title="Removing Song", description="Song **{0}** by *{1}* has been removed".format(player.Queue._queue[pos].title, player.Queue._queue[pos].author), color=0x00ffff)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             await player.remove(pos)
-            await ctx.reply(embed=embed, mention_author=False)
+            await ctx.send(embed=embed, mention_author=False)
         except:
             embed = discord.Embed(title="Error", description="Invalid Input!", color="0xff0000")
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            await ctx.reply(embed=embed)
+            await ctx.send(embed=embed)
 
     @commands.command(pass_context = True, brief='Shows currently playing song', aliases=["current_playing",'current',"curr", "cur"])
     async def current_song(self, ctx):
@@ -433,7 +433,7 @@ class Music(commands.Cog):
             embed = discord.Embed(title="Uh Oh!", description="I'm not connected to a voice channel or there are no currently playing songs", color=0xff0000)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             embed.set_footer(text="Please try again with a song")
-            return await ctx.reply(embed=embed)
+            return await ctx.send(embed=embed)
 
 
 
