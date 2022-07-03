@@ -21,7 +21,7 @@ class Helios(commands.Bot):
         super().run(TOKEN, reconnect= True)
     
     async def on_ready(self):
-        await self.change_presence(status=discord.Status.do_not_disturb, activity=discord.Game('Jammin to music'))
+        await self.change_presence(status=discord.Status.do_not_disturb, activity=discord.Game('Smurfin in diamond lobbies'))
         print("{0} has sucessfully connected to Discord".format(bot.user))
     
 
