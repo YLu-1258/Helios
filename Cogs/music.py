@@ -325,7 +325,7 @@ class Music(commands.Cog):
         if voice and voice.is_connected():
             await voice.disconnect()
             embed = discord.Embed(title="Voice ", description=f"Left {channel}", color=0xff0000)
-            embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             embed.set_footer(text="Called by {0}".format(ctx.author.display_name))
             await ctx.send(embed=embed)
         else:
