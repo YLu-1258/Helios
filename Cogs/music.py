@@ -240,7 +240,8 @@ class Player(commands.Cog):
         self.Queue._queue.pop(pos)
         if self.Queue.repmode==1:
             self.Queue.repmode=0
-        self.Queue.pos-=1
+        if pos <= self.Queue.pos:
+            self.Queue.pos-=1
 
 class Music(commands.Cog):
 
