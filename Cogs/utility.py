@@ -19,7 +19,7 @@ class Utility(commands.Cog):
         await ctx.send(embed = embed)
 
     @commands.command(pass_context = True, brief = 'Clears chat', aliases=["clearchat", "clear", "spoilers"])
-    async def clearcht(ctx, amount=10):
+    async def clearcht(self, ctx, amount=10):
         print("Clear request sent from user {0} of number {1}".format(str(ctx.message.author), amount))
         amount += 1
         if amount > 1:
