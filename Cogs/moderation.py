@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-from discord.ext.commands import has_permissions
 
 class Moderation(commands.Cog):
 
@@ -8,26 +7,26 @@ class Moderation(commands.Cog):
         self.bot = bot
 
     @commands.command(pass_context = True, brief = 'Kicks a user', aliases = ['k'])
-    @has_permissions(manage_roles=True, kick_members=True)
-    async def kick(ctx, member : discord.Member, *, reason=None):
-        await ctx.guild.kick(member)
+    @commands.has_permissions(manage_roles=True, kick_members=True)
+    async def kick(self, ctx, member : discord.Member, *, reason=None):
+        await member.kick(reason=reason)
         embed = discord.Embed(title="Member Kicked", description=f"{member.mention} has been kicked for {reason}", color=0xff0000)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         embed.set_footer(text="Called by {0}".format(ctx.author.display_name))
         await ctx.send(embed=embed)
 
     @commands.command(pass_context = True, brief = 'Bans a User', aliases = ['b'])
-    @has_permissions(manage_roles=True, ban_members=True)
-    async def ban(ctx, member : discord.Member, *, reason=None):
-        await ctx.guild.ban(member)
+    @commands.has_permissions(manage_roles=True, ban_members=True)
+    async def ban(self, ctx, member : discord.Member, *, reason=None):
+        await member.ban(reason=reason)
         embed = discord.Embed(title="Member Banned", description=f"{member.mention} has been banned for {reason}", color=0xff0000)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         embed.set_footer(text="Called by {0}".format(ctx.author.display_name))
         await ctx.send(embed=embed)
 
     @commands.command(pass_context = True, brief = 'Unbans a user', aliases = ['ub'])
-    @has_permissions(manage_roles=True, ban_members=True)
-    async def unban(ctx, *, member):
+    @commands.has_permissions(manage_roles=True, ban_members=True)
+    async def unban(self, ctx, *, member):
         banned_users = await ctx.guild.bans()
         member_name, member_discriminator = member.spilt("#")
 
