@@ -314,6 +314,7 @@ class Music(commands.Cog):
             await ctx.send(f"Left {channel}")
         else:
             await ctx.send("I am not in a voice channel")
+        self.cleanup(ctx.guild)
 
 
     @commands.command(pass_context=True, brief='Pauses the currently playing music', aliases=['pa','st', 'stp', 'stop'])
