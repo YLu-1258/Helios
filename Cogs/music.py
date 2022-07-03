@@ -324,7 +324,10 @@ class Music(commands.Cog):
         voice = get(self.bot.voice_clients, guild=ctx.guild)
         if voice and voice.is_connected():
             await voice.disconnect()
-            await ctx.send(f"Left {channel}")
+            embed = discord.Embed(title="Voice ", description=f"Left {channel}", color=0xff0000)
+            embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+            embed.set_footer(text="Called by {0}".format(ctx.author.display_name))
+            await ctx.send(embed=embed)
         else:
             await ctx.send("I am not in a voice channel")
         await self.cleanup(ctx.guild)
