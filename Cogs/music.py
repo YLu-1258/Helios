@@ -264,6 +264,17 @@ class Music(commands.Cog):
 
         return player
 
+    @commands.command(pass_context=True, brief="Joins the channel", aliases=['joi', 'j'])
+    async def join(self, ctx):
+        channel = ctx.message.author.voice.channel
+        voice = get(ctx.guild.voice_channels, name=channel.name)
+        voice_client = get(self.bot.voice_clients, guild=ctx.guild)
+
+        if voice_client == None:
+            voice_client = await voice.connect()
+        else:
+            await voice_client.move_to(channel)
+
     @commands.command(pass_context=True, brief="plays a song!", aliases=['p', 'paly', 'pl'])
     async def play(self, ctx, *, search=''):
         """Plays a song"""
