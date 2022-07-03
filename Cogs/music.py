@@ -238,7 +238,7 @@ class Player(commands.Cog):
 
     async def remove(self, pos):
         self.Queue._queue.pop(pos)
-        if self.Queue.repmode==1:
+        if self.Queue.repmode==1 and pos == self.Queue.pos:
             self.Queue.repmode=0
         if pos <= self.Queue.pos:
             self.Queue.pos-=1
