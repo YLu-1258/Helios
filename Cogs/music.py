@@ -444,6 +444,11 @@ class Music(commands.Cog):
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             await player.remove(pos)
             await ctx.send(embed=embed, mention_author=False)
+            if player.Queue.pos == pos:
+                vc = ctx.voice_client
+                if player.Queue.repmode == 1:
+                    player.Queue.repmode = 0
+                vc.stop()
         except:
             embed = discord.Embed(title="Error", description="Invalid Input!", color="0xff0000")
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
