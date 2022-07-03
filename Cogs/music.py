@@ -238,6 +238,9 @@ class Player(commands.Cog):
 
     async def remove(self, pos):
         self.Queue._queue.pop(pos)
+        if self.Queue.repmode==1:
+            self.Queue.repmode=0
+        self.Queue.pos-=1
 
 class Music(commands.Cog):
 
@@ -274,11 +277,9 @@ class Music(commands.Cog):
 
         if voice_client == None:
             voice_client = await voice.connect()
-            await ctx.guild.change_voice_state(channel=channel, self_mute=True, self_deaf=True)
         else:
             await voice_client.move_to(channel)
-            await ctx.guild.change_voice_state(channel=channel, self_mute=True, self_deaf=True)
-
+        await ctx.guild.change_voice_state(channel=channel, self_mute=True, self_deaf=True)
         embed = discord.Embed(title="Voice ", description=f"Joined {channel}", color=0xff0000)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         embed.set_footer(text="Called by {0}".format(ctx.author.display_name))
@@ -302,11 +303,9 @@ class Music(commands.Cog):
         # Check if our bot is currently in a voice call, if not, connect to call, if yes, move to call
         if voice_client == None:
                 voice_client = await voice.connect()
-                await ctx.guild.change_voice_state(channel=channel, self_mute=True, self_deaf=True)
         else:
                 await voice_client.move_to(channel)
-                await ctx.guild.change_voice_state(channel=channel, self_mute=True, self_deaf=True)
-
+        await ctx.guild.change_voice_state(channel=channel, self_mute=True, self_deaf=True)
 
         await player.store_song(ctx, search)
 
@@ -446,12 +445,6 @@ class Music(commands.Cog):
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             await player.remove(pos)
             await ctx.send(embed=embed, mention_author=False)
-            if player.Queue.pos == pos:
-                vc = ctx.voice_client
-                player.Queue.pos-=1
-                if player.Queue.repmode == 1:
-                    player.Queue.repmode = 0
-                vc.stop()
         except:
             embed = discord.Embed(title="Error", description="Invalid Input!", color="0xff0000")
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
