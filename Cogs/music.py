@@ -277,6 +277,11 @@ class Music(commands.Cog):
             await voice_client.move_to(channel)
             await ctx.guild.change_voice_state(channel=channel, self_mute=True, self_deaf=True)
 
+        embed = discord.Embed(title="Voice ", description=f"Joined {channel}", color=0xff0000)
+        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+        embed.set_footer(text="Called by {0}".format(ctx.author.display_name))
+        await ctx.send(embed=embed)
+
     @commands.command(pass_context=True, brief="plays a song!", aliases=['p', 'paly', 'pl'])
     async def play(self, ctx, *, search=''):
         """Plays a song"""
