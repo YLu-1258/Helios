@@ -10,7 +10,7 @@ class Moderation(commands.Cog):
     @commands.command(pass_context = True, brief = 'Kicks a user', aliases = ['k'])
     @has_permissions(manage_roles=True, kick_members=True)
     async def kick(ctx, member : discord.Member, *, reason=None):
-        await member.kick(reason=reason)
+        await ctx.guild.kick(member)
         embed = discord.Embed(title="Member Kicked", description=f"{member.mention} has been kicked for {reason}", color=0xff0000)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         embed.set_footer(text="Called by {0}".format(ctx.author.display_name))
@@ -19,7 +19,7 @@ class Moderation(commands.Cog):
     @commands.command(pass_context = True, brief = 'Bans a User', aliases = ['b'])
     @has_permissions(manage_roles=True, ban_members=True)
     async def ban(ctx, member : discord.Member, *, reason=None):
-        await member.ban(reason=reason)
+        await ctx.guild.ban(member)
         embed = discord.Embed(title="Member Banned", description=f"{member.mention} has been banned for {reason}", color=0xff0000)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         embed.set_footer(text="Called by {0}".format(ctx.author.display_name))
