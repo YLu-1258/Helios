@@ -401,32 +401,30 @@ class Music(commands.Cog):
         player = self.get_player(ctx)
         await player.print_queue(page)
 
-    @commands.command(pass_context = True, brief='Loops the current song', aliases=['loopsong','loopcurrent','loopcurrentsong'])
-    async def loop_song(self, ctx):
+    @commands.command(pass_context = True, brief='loops a way based on input', aliases=['lop'])
+    async def loop(self, ctx, pos):
         player = self.get_player(ctx)
-        player.Queue.repmode = 1
-        embed = discord.Embed(title="Looping Song!", description="Now looping: **{0}** by *{1}*".format(player.Queue._queue[player.Queue.pos].title, player.Queue._queue[player.Queue.pos].author), color=0x00ffff, url="https://www.youtube.com/watch?v={0}".format(player.Queue._queue[player.Queue.pos].videoid))
-        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-        embed.set_thumbnail(url=player.Queue._queue[player.Queue.pos].thumb)
-        embed.set_footer(text="Duration: {0}".format(str(player.Queue._queue[player.Queue.pos].duration)))
-        await ctx.send(embed=embed, mention_author=False)
-
-    @commands.command(pass_context = True, brief='Loops the entire track/queue', aliases=['looptrack','loopqueue','loopall', "lt", "lq", "la"])
-    async def loop_track(self, ctx):
-        player = self.get_player(ctx)
-        player.Queue.repmode = 2
-        embed = discord.Embed(title="Looping Track!", color=0x00ffff)
-        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-        await ctx.send(embed=embed, mention_author=False)
-        #loops track
-
-    @commands.command(pass_context = True, brief='unloops the track or song', aliases=['unloop','unloopsong','unlooptrack', "ul", "uls", ])
-    async def un_loop(self, ctx):
-        player = self.get_player(ctx)
-        player.Queue.repmode = 0
-        embed = discord.Embed(title="Unlooping Song/Track!", color=0x00ffff)
-        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-        await ctx.send(embed=embed, mention_author=False)
+        if pos in ('0', 'un' , 'u'):
+            player.Queue.repmode = 0
+            embed = discord.Embed(title="Unlooping Song/Track!", color=0x00ffff)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            await ctx.send(embed=embed, mention_author=False)
+        elif pos in ('1', 'current', 'song'):
+            player.Queue.repmode = 1
+            embed = discord.Embed(title="Looping Song!", description="Now looping: **{0}** by *{1}*".format(player.Queue._queue[player.Queue.pos].title, player.Queue._queue[player.Queue.pos].author), color=0x00ffff, url="https://www.youtube.com/watch?v={0}".format(player.Queue._queue[player.Queue.pos].videoid))
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_thumbnail(url=player.Queue._queue[player.Queue.pos].thumb)
+            embed.set_footer(text="Duration: {0}".format(str(player.Queue._queue[player.Queue.pos].duration)))
+            await ctx.send(embed=embed, mention_author=False)
+        elif pos in ('2', 'all', 'track'):
+            player.Queue.repmode = 2
+            embed = discord.Embed(title="Looping Track!", color=0x00ffff)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            await ctx.send(embed=embed, mention_author=False)
+        else:
+            embed = discord.Embed(title="Error", description="Invalid Input!", color=0xff0000)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            await ctx.send(embed=embed)
 
     @commands.command(pass_context = True, brief='shuffles track', aliases=['shuffletrack','shuffleall'])
     async def shuffle(self, ctx):
@@ -439,9 +437,9 @@ class Music(commands.Cog):
     
     @commands.command(pass_context = True, brief='Removes the song at the index', aliases=['rm', "del", "delete"])
     async def remove(self, ctx, pos):
-        pos = int(pos) - 1
         player = self.get_player(ctx)
         try:
+            pos = int(pos) - 1
             embed = discord.Embed(title="Removing Song", description="Song **{0}** by *{1}* has been removed".format(player.Queue._queue[pos].title, player.Queue._queue[pos].author), color=0x00ffff)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             await player.remove(pos)
