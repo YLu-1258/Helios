@@ -98,6 +98,8 @@ class Queue:
             else:
                 self.pos = 0 #loop back to first song
                 print("REPMODE 2: LOOPBACK")
+        elif len(self._queue) == 0:
+            raise EndOfQueue
 
 
     def clear(self):
@@ -448,6 +450,7 @@ class Music(commands.Cog):
                 vc = ctx.voice_client
                 if player.Queue.repmode == 1:
                     player.Queue.repmode = 0
+                player.Queue.pos-=1
                 vc.stop()
         except:
             embed = discord.Embed(title="Error", description="Invalid Input!", color="0xff0000")
