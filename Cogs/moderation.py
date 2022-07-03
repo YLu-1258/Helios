@@ -7,7 +7,7 @@ class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(pass_context = True, brief = 'Kicks a user', aliases = ['k'])
     @has_permissions(manage_roles=True, kick_members=True)
     async def kick(ctx, member : discord.Member, *, reason=None):
         await member.kick(reason=reason)
@@ -16,7 +16,7 @@ class Moderation(commands.Cog):
         embed.set_footer(text="Called by {0}".format(ctx.author.display_name))
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(pass_context = True, brief = 'Bans a User', aliases = ['b'])
     @has_permissions(manage_roles=True, ban_members=True)
     async def ban(ctx, member : discord.Member, *, reason=None):
         await member.ban(reason=reason)
@@ -25,7 +25,7 @@ class Moderation(commands.Cog):
         embed.set_footer(text="Called by {0}".format(ctx.author.display_name))
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(pass_context = True, brief = 'Unbans a user', aliases = ['ub'])
     @has_permissions(manage_roles=True, ban_members=True)
     async def unban(ctx, *, member):
         banned_users = await ctx.guild.bans()

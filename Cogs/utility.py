@@ -17,7 +17,7 @@ class Utility(commands.Cog):
         embed.add_field(name = 'Music CMDS', value = '`play`, `leave`, `pause`, `resume`, `queue`, `remove`, `skip`, `loopsong`, `loopqueue`, `unloop`, `shuffle`, `current`')
         await ctx.send(embed = embed)
 
-    @commands.command(aliases=["clearchat", "clear", "spoilers"])
+    @commands.command(pass_context = True, brief = 'Clears chat', aliases=["clearchat", "clear", "spoilers"])
     async def clearcht(ctx, amount=10):
         print("Clear request sent from user {0} of number {1}".format(str(ctx.message.author), amount))
         amount += 1
