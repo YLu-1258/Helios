@@ -282,8 +282,11 @@ class Music(commands.Cog):
         # Check if our bot is currently in a voice call, if not, connect to call, if yes, move to call
         if voice_client == None:
                 voice_client = await voice.connect()
+                await ctx.guild.change_voice_state(channel=channel, self_mute=True, self_deaf=True)
         else:
                 await voice_client.move_to(channel)
+                await ctx.guild.change_voice_state(channel=channel, self_mute=True, self_deaf=True)
+
 
         await player.store_song(ctx, search)
 
@@ -313,7 +316,7 @@ class Music(commands.Cog):
             await ctx.send("I am not in a voice channel")
 
 
-    @commands.command(pass_context=True, brief='Pauses the currently playing music', aliases=['pa'])
+    @commands.command(pass_context=True, brief='Pauses the currently playing music', aliases=['pa','st', 'stp', 'stop'])
     async def pause(self, ctx):
         """Pause the currently playing song."""
         vc = ctx.voice_client
@@ -330,7 +333,7 @@ class Music(commands.Cog):
         await ctx.message.add_reaction("⏸️")
 
 
-    @commands.command(pass_context = True, brief='Resumes the currently paused track', aliases=['r', 're'])
+    @commands.command(pass_context = True, brief='Resumes the currently paused track', aliases=['r', 're','start'])
     async def resume(self, ctx):
         """Resume the currently paused song."""
         vc = ctx.voice_client
@@ -346,8 +349,8 @@ class Music(commands.Cog):
         vc.resume()
         await ctx.message.add_reaction("⏯️")
 
-    @commands.command(pass_context = True, brief='Stops the current track', aliases=['st', 'stp', "skip", "sk"])
-    async def stop(self, ctx):
+    @commands.command(pass_context = True, brief='Stops the current track', aliases=["sk","next"])
+    async def skip(self, ctx):
         """Stops the currently playing song."""
         vc = ctx.voice_client
 
