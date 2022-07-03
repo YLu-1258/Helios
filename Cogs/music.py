@@ -272,8 +272,10 @@ class Music(commands.Cog):
 
         if voice_client == None:
             voice_client = await voice.connect()
+            await ctx.guild.change_voice_state(channel=channel, self_mute=True, self_deaf=True)
         else:
             await voice_client.move_to(channel)
+            await ctx.guild.change_voice_state(channel=channel, self_mute=True, self_deaf=True)
 
     @commands.command(pass_context=True, brief="plays a song!", aliases=['p', 'paly', 'pl'])
     async def play(self, ctx, *, search=''):
@@ -325,7 +327,7 @@ class Music(commands.Cog):
             await ctx.send(f"Left {channel}")
         else:
             await ctx.send("I am not in a voice channel")
-        self.cleanup(ctx.guild)
+        await self.cleanup(ctx.guild)
 
 
     @commands.command(pass_context=True, brief='Pauses the currently playing music', aliases=['pa','st', 'stp', 'stop'])
