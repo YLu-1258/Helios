@@ -182,7 +182,7 @@ class Player(commands.Cog):
                 self.current = None
                 self.Queue.next_song()
             except EndOfQueue:
-                embed3 = discord.Embed(title="Uh oh! ", description="The Queue has Ended, Player will now terminate, POS: {0}, Total {1}".format(self.Queue.pos, len(self.Queue._queue)), color=0xff0000)
+                embed3 = discord.Embed(title="Uh oh! ", description="The Queue has Ended, Player will now terminate.", color=0xff0000)
                 embed3.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
                 embed3.set_footer(text="We hope you had fun!")
                 await self.ctx.send(embed=embed3, mention_author=False)
