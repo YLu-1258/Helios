@@ -1,15 +1,16 @@
-import email
 import discord
-from urllib import request
+import requests
+import lxml.etree
+import json
 import re
 import random
 import asyncio
 import pafy
-from async_timeout import timeout
-from functools import partial
+
 from discord.ext import commands
 from discord.utils import get
 from discord import FFmpegPCMAudio
+from urllib import request
 
 FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5','options': '-vn'}
 
@@ -35,6 +36,30 @@ def valid_url(query):
         r'(?:/?|[/?]\S+)$', re.IGNORECASE
     )
     return re.match(url_re, query) is not None
+
+def getSongs(url):
+    results = []
+    def getIDs(url):
+        raw = requests.get(url).text
+        js = lxml.etree.HTML(raw).findall('.//body/script')
+        for i in js:
+            if "ytInitialData" in str(i.text):
+                data = json.loads(i.text[20:-1])
+                break
+        json_object = json.dumps(data, indent = 4)
+        return json_object
+
+    def build_list(a_dict):
+        try:
+            if "https://www.youtube.com/watch?v="+a_dict['videoId'] not in results:
+                results.append("https://www.youtube.com/watch?v="+a_dict['videoId'])
+        except KeyError:
+            pass
+        return a_dict
+
+    json.loads(getIDs(url), object_hook=build_list)
+    
+    return results
 
 class Queue:
     def __init__(self):
@@ -125,7 +150,7 @@ class Player(commands.Cog):
     def __del__(self):
         print("Player has been shut down")
         
-    async def store_song(self, ctx, inp_song):
+    async def store_song(self, ctx, inp_song, playlist = False):
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel and \
             msg.content in ("1","2","3","cancel", "Cancel", "c", "C")
@@ -155,10 +180,11 @@ class Player(commands.Cog):
             song = pafy.new(inp_song)
         
         self.Queue.add_song(song)
-        embed2 = discord.Embed(title="Song", description="Song **{0}** by *{1}* has been successfully queued!".format(song.title, song.author), color=0x00ffff)
-        embed2.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-        embed2.set_footer(text="Called by: {0}".format(ctx.author.display_name))
-        await ctx.send(embed=embed2, mention_author=False)
+        if not playlist:
+            embed2 = discord.Embed(title="Song", description="Song **{0}** by *{1}* has been successfully queued!".format(song.title, song.author), color=0x00ffff)
+            embed2.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed2.set_footer(text="Called by: {0}".format(ctx.author.display_name))
+            await ctx.send(embed=embed2, mention_author=False)
         
 
     async def play_songs(self):
@@ -303,7 +329,16 @@ class Music(commands.Cog):
                 await voice_client.move_to(channel)
         await ctx.guild.change_voice_state(channel=channel, self_mute=True, self_deaf=True)
 
-        await player.store_song(ctx, search)
+        if search.find("playlist") != 1:
+            ids = getSongs(search)
+            for videoId in ids:
+                await player.store_song(ctx, videoId, True)
+            embed2 = discord.Embed(title="Playlist", description="Playlist has been successfully queued!", color=0x00ffff)
+            embed2.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed2.set_footer(text="Called by: {0}".format(ctx.author.display_name))
+            await ctx.send(embed=embed2, mention_author=False)
+        else:
+            await player.store_song(ctx, search)
 
         if player.not_playing:
             await player.play_songs()
