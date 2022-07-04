@@ -248,6 +248,7 @@ class Music(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.players = {}
+        self.is_deafened=False
 
     async def cleanup(self, guild):
         try:
@@ -280,7 +281,9 @@ class Music(commands.Cog):
             voice_client = await voice.connect()
         else:
             await voice_client.move_to(channel)
-        await ctx.guild.change_voice_state(channel=channel, self_mute=True, self_deaf=True)
+        if not self.is_deafened:
+            self.is_deafened = True
+            await ctx.guild.change_voice_state(channel=channel, self_mute=True, self_deaf=True)
         embed = discord.Embed(title="Voice ", description=f"Joined {channel}", color=0xff0000)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         embed.set_footer(text="Called by {0}".format(ctx.author.display_name))
@@ -306,7 +309,9 @@ class Music(commands.Cog):
                 voice_client = await voice.connect()
         else:
                 await voice_client.move_to(channel)
-        await ctx.guild.change_voice_state(channel=channel, self_mute=True, self_deaf=True)
+        if not self.is_deafened:
+            self.is_deafened = True
+            await ctx.guild.change_voice_state(channel=channel, self_mute=True, self_deaf=True)
 
         await player.store_song(ctx, search)
 
