@@ -329,7 +329,7 @@ class Music(commands.Cog):
                 await voice_client.move_to(channel)
         await ctx.guild.change_voice_state(channel=channel, self_mute=True, self_deaf=True)
 
-        if search.find("playlist") != 1:
+        if "playlist" in search:
             ids = getSongs(search)
             for videoId in ids:
                 await player.store_song(ctx, videoId, True)
@@ -338,7 +338,7 @@ class Music(commands.Cog):
             embed2.set_footer(text="Called by: {0}".format(ctx.author.display_name))
             await ctx.send(embed=embed2, mention_author=False)
         else:
-            await player.store_song(ctx, search)
+            await player.store_song(ctx, search, False)
 
         if player.not_playing:
             await player.play_songs()
@@ -404,8 +404,8 @@ class Music(commands.Cog):
         await ctx.message.add_reaction("⏯️")
 
     @commands.command(pass_context = True, brief='Stops the current track', aliases=["sk","next",'skipto','skt'])
-    async def skip(self, ctx, pos="agdfkakvcncdpwgkmzxmvsahjymdkkwamow"):
-        """Stops the currently playing song."""
+    async def skip(self, ctx, pos=None):
+        """Stops\Skips the currently playing song."""
         vc = ctx.voice_client
         player = self.get_player(ctx)
         if not vc or not vc.is_connected():
@@ -414,7 +414,7 @@ class Music(commands.Cog):
             embed.set_footer(text="Please try again with a song")
             return await ctx.send(embed=embed)
 
-        if pos == "agdfkakvcncdpwgkmzxmvsahjymdkkwamow":
+        if pos is None:
             vc.stop()
             await ctx.message.add_reaction("⏹️")
             return
