@@ -231,11 +231,6 @@ class Player(commands.Cog):
         self.Queue.clear()
         return self.bot.loop.create_task(self._cog.cleanup(guild))
 
-    async def skip_to(self, pos):
-        self.Queue.pos = pos
-        self._guild.voice_client.stop()
-        
-
     async def remove(self, pos):
         self.Queue._queue.pop(pos)
         if self.Queue.repmode==1 and pos == self.Queue.pos:
@@ -373,20 +368,37 @@ class Music(commands.Cog):
         vc.resume()
         await ctx.message.add_reaction("⏯️")
 
-    @commands.command(pass_context = True, brief='Stops the current track', aliases=["sk","next"])
-    async def skip(self, ctx):
+    @commands.command(pass_context = True, brief='Stops the current track', aliases=["sk","next",'skipto','skt'])
+    async def skip(self, ctx, pos="agdfkakvcncdpwgkmzxmvsahjymdkkwamow"):
         """Stops the currently playing song."""
         vc = ctx.voice_client
-
+        player = self.get_player(ctx)
         if not vc or not vc.is_connected():
             embed = discord.Embed(title="Uh Oh!", description="I'm not connected to a voice channel or there are no currently playing songs", color=0xff0000)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             embed.set_footer(text="Please try again with a song")
             return await ctx.send(embed=embed)
 
-
-        vc.stop()
-        await ctx.message.add_reaction("⏹️")
+        if pos == "agdfkakvcncdpwgkmzxmvsahjymdkkwamow":
+            vc.stop()
+            await ctx.message.add_reaction("⏹️")
+            return
+        try:
+            pos = int(pos) - 1
+            if pos in range(0,len(player.Queue._queue)):
+                player.Queue.pos = pos-1
+                if player.Queue.repmode ==1:
+                    player.Queue.repmode = 0
+                vc.stop()
+                await ctx.message.add_reaction("⏹️")
+            else:
+                embed = discord.Embed(title="Error", description="Invalid Input!", color=0xff0000)
+                embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+                await ctx.send(embed=embed)
+        except:
+            embed = discord.Embed(title="Error", description="Invalid Input!", color=0xff0000)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            await ctx.send(embed=embed)            
 
     @commands.command(pass_context = True, brief='Displays the current Playlist/Queue', aliases=['playlist', 'q', 'plist', 'list'])
     async def queue(self, ctx, *, page=1):
