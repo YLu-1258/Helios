@@ -348,7 +348,7 @@ class Music(commands.Cog):
         elif not channel:
             await ctx.send("You are not in a channel")
             return
-        if not channel:
+        elif not channel:
             await ctx.send("I am not in a voice channel")
             return
         voice = get(self.bot.voice_clients, guild=ctx.guild)
@@ -478,6 +478,9 @@ class Music(commands.Cog):
     @commands.command(pass_context = True, brief='Removes the song at the index', aliases=['rm', "del", "delete"])
     async def remove(self, ctx, pos):
         player = self.get_player(ctx)
+        if pos in ("a","all"):
+            await player.Queue.clear()
+            return
         try:
             pos = int(pos) - 1
             embed = discord.Embed(title="Removing Song", description="Song **{0}** by *{1}* has been removed".format(player.Queue._queue[pos].title, player.Queue._queue[pos].author), color=0xfd00f5)
