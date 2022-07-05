@@ -469,6 +469,13 @@ class Music(commands.Cog):
     @commands.command(pass_context = True, brief='Removes the song at the index', aliases=['rm', "del", "delete"])
     async def remove(self, ctx, pos):
         player = self.get_player(ctx)
+        if pos in ("a","all"):
+            embed3 = discord.Embed(title="Uh oh! ", description="The Queue has Ended, Player will now terminate.", color=0x00ffff)
+            embed3.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed3.set_footer(text="We hope you had fun!")
+            await self.ctx.send(embed=embed3, mention_author=False)
+            await self.cleanup(ctx.guild)
+            return
         try:
             pos = int(pos) - 1
             embed = discord.Embed(title="Removing Song", description="Song **{0}** by *{1}* has been removed".format(player.Queue._queue[pos].title, player.Queue._queue[pos].author), color=0xfd00f5)
