@@ -210,12 +210,6 @@ class Player(commands.Cog):
     def curr_song(self):
         return self.Queue._queue[self.Queue.pos] 
 
-    def set_loop_mode(self, mode):
-        if mode not in (0,1,2):
-
-            raise InvalidArgument
-        self.Queue.repmode = mode
-
     async def print_queue(self, page):
         tracklist = [""]
         i = 0
