@@ -248,7 +248,6 @@ class Player(commands.Cog):
 
     def destroy(self, guild):
         """Disconnect and cleanup the player."""
-        self.Queue.clear()
         return self.bot.loop.create_task(self._cog.cleanup(guild))
 
     async def remove(self, pos):
