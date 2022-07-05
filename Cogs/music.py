@@ -201,7 +201,7 @@ class Player(commands.Cog):
                 self.current = None
                 self.Queue.next_song()
             except EndOfQueue:
-                embed3 = discord.Embed(title="Uh oh! ", description="The Queue has Ended, Player will now terminate.", color=0x00ffff)
+                embed3 = discord.Embed(title="Uh oh! ", description="The Queue has Ended, Player will now terminate.", color=0xff0000)
                 embed3.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
                 embed3.set_footer(text="We hope you had fun!")
                 await self.ctx.send(embed=embed3, mention_author=False)
@@ -345,7 +345,7 @@ class Music(commands.Cog):
         voice = get(self.bot.voice_clients, guild=ctx.guild)
         if voice and voice.is_connected():
             await voice.disconnect()
-            embed = discord.Embed(title="Voice ", description=f"Left {channel}", color=0xfd00f5)
+            embed = discord.Embed(title="Voice ", description=f"Left {channel}", color=0xff0000)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             embed.set_footer(text="Called by {0}".format(ctx.author.display_name))
             await ctx.send(embed=embed)
