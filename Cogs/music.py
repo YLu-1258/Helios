@@ -124,16 +124,7 @@ class Queue:
                 print("REPMODE 2: ADDED TO POS")
             else:
                 self.pos = 0 #loop back to first song
-                print("REPMODE 2: LOOPBACK")
-
-
-    def clear(self):
-        '''
-        Clear Queue
-        '''
-        self._queue.clear()
-        self.pos = 0
-        self.repmode=0        
+                print("REPMODE 2: LOOPBACK")       
 
 class Player(commands.Cog):
     def __init__(self, ctx):
@@ -254,7 +245,6 @@ class Player(commands.Cog):
 
     def destroy(self, guild):
         """Disconnect and cleanup the player."""
-        self.Queue.clear()
         return self.bot.loop.create_task(self._cog.cleanup(guild))
 
     async def remove(self, pos):
