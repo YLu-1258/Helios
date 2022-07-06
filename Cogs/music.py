@@ -250,13 +250,6 @@ class Player(commands.Cog):
         """Disconnect and cleanup the player."""
         return self.bot.loop.create_task(self._cog.cleanup(guild))
 
-    async def remove(self, pos):
-        self.Queue._queue.pop(pos)
-        if self.Queue.repmode==1 and pos == self.Queue.pos:
-            self.Queue.repmode=0
-        if pos <= self.Queue.pos:
-            self.Queue.pos-=1
-
 class Music(commands.Cog):
 
     def __init__(self, bot):
@@ -492,7 +485,14 @@ class Music(commands.Cog):
             pos = int(pos) - 1
             embed = discord.Embed(title="Removing Song", description="Song **{0}** by *{1}* has been removed".format(player.Queue._queue[pos].title, player.Queue._queue[pos].author), color=0xfd00f5)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            await player.remove(pos)
+            player.Queue._queue.pop(pos)
+            if player.Queue.repmode==1 and pos == player.Queue.pos:
+                player.Queue.repmode=0
+            if pos == player.Queue.pos:
+                player.Queue.pos-=1
+                vc.stop()
+            elif pos < player.Queue.pos:
+                player.Queue.pos-=1
             await ctx.send(embed=embed, mention_author=False)
         except:
             embed = discord.Embed(title="Error", description="Invalid Input!", color=0xff0000)
