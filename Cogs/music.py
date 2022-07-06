@@ -474,6 +474,11 @@ class Music(commands.Cog):
         embed = discord.Embed(title="Shuffling Track!", color=0xfd00f5)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed, mention_author=False)
+        player.Queue.pos-=1
+        if player.Queue.repmode ==1:
+            player.Queue.repmode = 0
+        vc = ctx.voice_client
+        vc.stop()
     
     @commands.command(pass_context = True, brief='Removes the song at the index', aliases=['rm', "del", "delete"])
     async def remove(self, ctx, pos):
