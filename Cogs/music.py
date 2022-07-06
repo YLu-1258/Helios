@@ -478,8 +478,10 @@ class Music(commands.Cog):
     @commands.command(pass_context = True, brief='Removes the song at the index', aliases=['rm', "del", "delete"])
     async def remove(self, ctx, pos):
         player = self.get_player(ctx)
+        vc = ctx.voice_client
         if pos in ("a","all"):
-            await player.Queue.clear()
+            player.Queue.clear()
+            vc.stop()
             return
         try:
             pos = int(pos) - 1
