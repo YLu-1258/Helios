@@ -6,7 +6,6 @@ import re
 import random
 import asyncio
 import pafy
-
 from discord.ext import commands
 from discord.utils import get
 from discord import FFmpegPCMAudio
@@ -273,7 +272,7 @@ class Music(commands.Cog):
         if not member.bot and after.channel is None:
             print("No Listeners")
             if not [m for m in before.channel.members if not m.bot]:
-                await asyncio.sleep(10)
+                await asyncio.sleep(180)
                 if not [m for m in before.channel.members if not m.bot]:
                     print("Leaving")
                     await self.cleanup(member.guild)
