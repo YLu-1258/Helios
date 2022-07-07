@@ -267,6 +267,18 @@ class Music(commands.Cog):
         except KeyError:
             pass
 
+    @commands.Cog.listener()
+    async def on_voice_state_update(self, member, before, after):
+        voice = get(self.bot.voice_clients)
+        if not member.bot and after.channel is None:
+            print("No Listeners")
+            if not [m for m in before.channel.members if not m.bot]:
+                await asyncio.sleep(10)
+                if not [m for m in before.channel.members if not m.bot]:
+                    print("Leaving")
+                    await self.cleanup(member.guild)
+                    await voice.disconnect()
+
     def get_player(self, ctx): # Function I found pretty useful
         """Retrieve the guild player, or generate one."""
         try:
