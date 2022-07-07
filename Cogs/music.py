@@ -269,7 +269,7 @@ class Music(commands.Cog):
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
         voice = get(self.bot.voice_clients)
-        if not member.bot and after.channel is None:
+        if not member.bot:
             print("No Listeners")
             if not [m for m in before.channel.members if not m.bot]:
                 await asyncio.sleep(180)
