@@ -269,10 +269,9 @@ class Music(commands.Cog):
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
         voice = get(self.bot.voice_clients)
-        if member.bot or voice == None: # if bot called func or bot is not in vc
+        if member.bot or voice == None or after.mute == True or after.mute == False or after.deaf == True or after.deaf == False or after.self_mute == True or after.self_mute == False or after.self_deaf == True or after.self_deaf == False: # if bot called func or bot is not in vc or person mutes/deafeans ignore
             return
         elif before.channel and after.channel and before.channel.guild.voice_client == voice: #player joined a different channel
-            print("joined diff channel")
             if not [m for m in before.channel.members if not m.bot]:
                 print("No Listeners")
                 await asyncio.sleep(10)
@@ -281,7 +280,6 @@ class Music(commands.Cog):
                     await self.cleanup(member.guild)
                     await voice.disconnect()
         elif before.channel and after.channel is None and before.channel.guild.voice_client == voice: #if player leaves a channel
-            print("left vc")
             if not [m for m in before.channel.members if not m.bot]:
                 print("No Listeners")
                 await asyncio.sleep(10)
