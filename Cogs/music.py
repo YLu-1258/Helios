@@ -531,6 +531,29 @@ class Music(commands.Cog):
             embed.set_footer(text="Please try again with a song")
             return await ctx.send(embed=embed)
 
+    @commands.command(pass_context = True, brief='restarts a song')
+    async def restart(self, ctx, pos=''):
+        player = self.get_player(ctx)
+        vc = ctx.voice_client
+        if pos in ("all", "a"):
+            embed = discord.Embed(title="Restarting Track!", color=0xfd00f5)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            await ctx.send(embed=embed, mention_author=False)
+            player.Queue.pos = -1
+            if player.Queue.repmode==1:
+                player.Queue.repmode=0
+            vc.stop()
+        elif pos == '':
+            embed = discord.Embed(title="Restarting Song!", color=0xfd00f5)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            await ctx.send(embed=embed, mention_author=False)
+            player.Queue.pos-=1
+            vc.stop()
+        else:
+            embed = discord.Embed(title="Error", description="Invalid Input!", color=0xff0000)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            await ctx.send(embed=embed)
+
 
 
 
