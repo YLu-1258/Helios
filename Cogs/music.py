@@ -275,7 +275,7 @@ class Music(commands.Cog):
 
         elif before.channel and after.channel and before.channel == voice.channel: #player joined a different channel
             if not [m for m in voice.channel.members if not m.bot]:
-                await asyncio.sleep(180)
+                await asyncio.sleep(300)
                 
                 if not [m for m in voice.channel.members if not m.bot]:
                     await voice.disconnect()
@@ -283,7 +283,7 @@ class Music(commands.Cog):
 
         elif before.channel and after.channel is None and before.channel == voice.channel: #if player leaves a channel
             if not [m for m in voice.channel.members if not m.bot]:
-                await asyncio.sleep(180)
+                await asyncio.sleep(300)
 
                 if not [m for m in voice.channel.members if not m.bot]:
                     await voice.disconnect()
