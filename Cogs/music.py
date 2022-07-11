@@ -536,7 +536,7 @@ class Music(commands.Cog):
     async def restart(self, ctx, pos=''):
         player = self.get_player(ctx)
         vc = ctx.voice_client
-        if pos in ("all", "a"):
+        if pos in ("all", "a", "track"):
             embed = discord.Embed(title="Restarting Track!", color=0xfd00f5)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             await ctx.send(embed=embed, mention_author=False)
