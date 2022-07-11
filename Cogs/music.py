@@ -273,21 +273,21 @@ class Music(commands.Cog):
         if member.bot or voice == None or before.channel == after.channel: # if bot called func or bot is not in vc or person mutes/deafeans ignore
             return
 
-        elif before.channel and after.channel and before.channel.guild.voice_client == voice: #player joined a different channel
+        elif before.channel and after.channel and before.channel == voice.channel: #player joined a different channel
             if not [m for m in voice.channel.members if not m.bot]:
                 await asyncio.sleep(180)
                 
                 if not [m for m in voice.channel.members if not m.bot]:
-                    await self.cleanup(member.guild)
                     await voice.disconnect()
+                    await self.cleanup(member.guild)
 
-        elif before.channel and after.channel is None and before.channel.guild.voice_client == voice: #if player leaves a channel
+        elif before.channel and after.channel is None and before.channel == voice.channel: #if player leaves a channel
             if not [m for m in voice.channel.members if not m.bot]:
                 await asyncio.sleep(180)
 
                 if not [m for m in voice.channel.members if not m.bot]:
-                    await self.cleanup(member.guild)
                     await voice.disconnect()
+                    await self.cleanup(member.guild)
 
     def get_player(self, ctx): # Function I found pretty useful
         """Retrieve the guild player, or generate one."""
