@@ -241,6 +241,7 @@ class Player(commands.Cog):
         embed = discord.Embed(title="Playlist", description="Currently playing: **{0}** by *{1}*".format(self._song.title, self._song.author), color=0xfd00f5)
         embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
         embed.add_field(name="Like it? Save it here", value='[Click here to go to song]( https://www.youtube.com/watch?v={0} )'.format(self._song.videoid), inline=False)
+        embed.set_footer(name="Current position in queue is {}".format(str(self.pos+1)))
         embed.set_image(url=self._song.thumb)
         await self.ctx.send(embed=embed, mention_author=False)
         
