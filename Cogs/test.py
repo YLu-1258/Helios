@@ -5,8 +5,6 @@ from discord.ext import commands
 from discord.utils import get
 from discord_ui import UI, SelectMenu, SelectOption
 
-Music_CMDS = "**` md.join `**\nMakes the music bot join the caller's voice channel\n\nAlternatives: *` arm.joi, .j `*\n\n" + "**` md.leave `**\nMakes the music bot leave the caller's voice channel\n\nAlternatives: *` arm.l `*\n\n" + "**` md.play {song} `**\nPlays or queues requested song\n\n__Song Options__\n- Request a song by typing the name of it\n- Provide a Youtube url\n\nAlternatives: *` arm.p, .paly, .pl `*\n\n"
-
 
 class Test(commands.Cog):
     def __init__(self, bot):
