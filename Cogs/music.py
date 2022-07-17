@@ -24,7 +24,6 @@ class IndexOutOfBounds(commands.CommandError):
     pass
 
 
-
 def valid_url(query):
     url_re = re.compile(
         r'^(?:http|ftp)s?://' # http:// or https://

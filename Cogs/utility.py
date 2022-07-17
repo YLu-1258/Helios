@@ -7,17 +7,6 @@ class Utility(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(pass_context = True, brief = 'All commands for bot', aliases = ['h'])
-    async def help(self,ctx):
-        embed = discord.Embed(
-            title = 'Help',
-            description = 'List of All Commands'
-        )
-        
-        embed.set_footer(text=f'Requested by - {ctx.author}', icon_url=ctx.author.avatar_url)
-        embed.add_field(name = 'Music CMDS', value = '`play`, `leave`, `pause`, `resume`, `queue`, `remove`, `skip`, `loopsong`, `loopqueue`, `unloop`, `shuffle`, `current`')
-        await ctx.send(embed = embed)
-
     @commands.command(pass_context = True, brief = 'Clears chat', aliases=["clearchat", "clear", "spoilers"])
     async def clearcht(self, ctx, amount=10):
         print("Clear request sent from user {0} of number {1}".format(str(ctx.message.author), amount))

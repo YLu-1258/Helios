@@ -9,8 +9,8 @@ class Test(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(pass_context = True, brief = 'Pseudo-help command', aliases = ["pseudo"])
-    async def phelp(self, ctx):
+    @commands.command(pass_context = True, brief = 'Pseudo-help command', aliases = ["h"])
+    async def help(self, ctx):
         embed = discord.Embed(title="Help Command", description="Please select from the following options", color=0x0000ff)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         embed.set_footer(text="Called by: {0}".format(ctx.author.display_name))
@@ -27,7 +27,6 @@ class Test(commands.Cog):
         except asyncio.exceptions.TimeoutError:
             await msg.delete()
             
-
 def setup(bot):
     bot.add_cog(Test(bot))
     ui = UI(bot)
