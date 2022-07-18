@@ -5,7 +5,7 @@ from discord.ext import commands
 from discord.utils import get
 from discord_ui import UI, SelectMenu, SelectOption
 
-class Test(commands.Cog):
+class Help(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -28,5 +28,5 @@ class Test(commands.Cog):
             await msg.delete()
             
 def setup(bot):
-    bot.add_cog(Test(bot))
+    bot.add_cog(Help(bot))
     ui = UI(bot)

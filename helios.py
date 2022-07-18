@@ -1,4 +1,5 @@
 import discord
+import options
 from discord.ext import commands
 from pathlib import Path
 
@@ -10,15 +11,14 @@ class Helios(commands.Bot):
     def load_cogs(self):    
         print("Loading cogs")
         for cog in self._cogs:
-            self.load_extension(f"Cogs.{cog}")
-            print(f"{cog} commands have been loaded")
+            if cog not in  ["options", "Utility"]:
+                self.load_extension(f"Cogs.{cog}")
+                print(f"{cog} commands have been loaded")
         print("All cogs Loaded")
 
     def run(self):
         self.load_cogs()
-        with open("./t0ken", "r", encoding="utf-8") as f:
-            TOKEN = f.read()
-        super().run(TOKEN, reconnect= True)
+        super().run(options.DISCORD_TOKEN, reconnect= True)
     
     async def on_ready(self):
         await self.change_presence(status=discord.Status.do_not_disturb, activity=discord.Game('Smurfin in diamond lobbies'))
