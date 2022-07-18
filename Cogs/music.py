@@ -322,7 +322,10 @@ class Music(commands.Cog):
         if not channel:
             await ctx.send("Join a voice channel before you use this command")
             return
-
+        if search == '':
+            await ctx.send("Please provide a song to play!")
+            return
+        
         # Get information about voice call 
         channel = channel.channel
         voice = get(ctx.guild.voice_channels, name=channel.name)
@@ -457,7 +460,7 @@ class Music(commands.Cog):
         await player.print_queue(page)
 
     @commands.command(pass_context = True, brief='loops a way based on input', aliases=['lop'])
-    async def loop(self, ctx, pos):
+    async def loop(self, ctx, pos='current'):
         player = self.get_player(ctx)
         if pos in ('0', 'un' , 'u'):
             player.Queue.repmode = 0
@@ -496,9 +499,21 @@ class Music(commands.Cog):
         vc.stop()
     
     @commands.command(pass_context = True, brief='Removes the song at the index', aliases=['rm', "del", "delete"])
-    async def remove(self, ctx, pos):
+    async def remove(self, ctx, pos='current'):
         player = self.get_player(ctx)
         vc = ctx.voice_client
+        if pos == 'current':
+            pos=player.Queue.pos
+            embed = discord.Embed(title="Removing Song", description="Song **{0}** by *{1}* has been removed".format(player.Queue._queue[pos].title, player.Queue._queue[pos].author), color=0xfd00f5)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            player.Queue._queue.pop(pos)
+            if player.Queue.repmode==1 and pos == player.Queue.pos:
+                player.Queue.repmode=0
+            if pos == player.Queue.pos:
+                player.Queue.pos-=1
+                vc.stop()
+            await ctx.send(embed=embed, mention_author=False)
+            return
         if pos in ("a","all"):
             player.Queue.clear()
             vc.stop()
