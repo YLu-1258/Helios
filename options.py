@@ -13,8 +13,8 @@ Music_Restart = "```yaml\n .restart {option} ```\nRestarts song or track\n\n__Re
 
 Music_CMDS = Music_Join + Music_Leave + Music_Play + Music_Pause + Music_Resume + Music_Skip + Music_Queue + Music_Loop + Music_Shuffle + Music_Remove + Music_Current + Music_Restart
 
-SPOTIFY_ID = "683213a13d6a4b31bc92c32deef36b41"
-SPOTIFY_SECRET = "fa14740a1e4846439685aeb8f3a048b0"
+SPOTIFY_ID = ""
+SPOTIFY_SECRET = ""
 SPOTIFY_REDIRECT_URI = "https://localhost:88888/callback"
 
-DISCORD_TOKEN = "OTY0Mzg1MDQ4MTEzNTg2MjU2.GmRjzP.0THXx7yeU3eFR3BB8wsJPMWlD5sQOBJ4i1egPY"
+DISCORD_TOKEN = ""
