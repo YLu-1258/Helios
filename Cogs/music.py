@@ -316,8 +316,12 @@ class Music(commands.Cog):
 
         inpt_type = sortLink(search)
         print("\n\n\n\n {0} \n\n\n\n\n".format(inpt_type))
+
+        # Youtube song
         if inpt_type == link_tools.LinkType.YOUTUBE:
             await player.store_song(ctx, search, False)
+
+        # Youtube Playlist
         elif inpt_type == link_tools.LinkType.YOUTUBE_PLAYLIST:
             ids = getSongs(search)
             for videoId in ids:
@@ -326,9 +330,13 @@ class Music(commands.Cog):
             embed2.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             embed2.set_footer(text="Called by: {0}".format(ctx.author.display_name))
             await ctx.send(embed=embed2, mention_author=False)
+
+        # Spotify Song
         elif inpt_type == link_tools.LinkType.SPOTIFY:
             query = self.S2Y.link_to_yt(search)
             await player.store_song(ctx, query, False)
+
+        # Spotify Playlist
         elif inpt_type == link_tools.LinkType.SPOTIFY_PLAYLIST:
             pl = self.S2Y.playlist_to_yt(search)
             for query in pl:
