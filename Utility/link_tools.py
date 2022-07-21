@@ -70,3 +70,8 @@ def validUrl(query):
         r'(?:/?|[/?]\S+)$', re.IGNORECASE
     )
     return re.match(url_re, query) is not None
+
+def check_lyric(title,author):
+    URL_SEARCH = "https://some-random-api.ml/lyrics?title="
+
+    

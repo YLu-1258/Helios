@@ -31,6 +31,9 @@ class EndOfQueue(commands.CommandError):
 class IndexOutOfBounds(commands.CommandError):
     pass
 
+class NoLyricsFound(commands.CommandError):
+    pass
+
 
 class Queue:
     def __init__(self):
@@ -315,7 +318,6 @@ class Music(commands.Cog):
         await ctx.guild.change_voice_state(channel=channel, self_mute=True, self_deaf=True)
 
         inpt_type = sortLink(search)
-        print("\n\n\n\n {0} \n\n\n\n\n".format(inpt_type))
 
         # Youtube song
         if inpt_type == link_tools.LinkType.YOUTUBE:
@@ -345,21 +347,11 @@ class Music(commands.Cog):
             embed2.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             embed2.set_footer(text="Called by: {0}".format(ctx.author.display_name))
             await ctx.send(embed=embed2, mention_author=False)
+        
+        # Search By Name
         elif inpt_type == link_tools.LinkType.UNKNOWN:
             await player.store_song(ctx, search, False)
         
-        '''
-        if "playlist" in search:
-            ids = getSongs(search)
-            for videoId in ids:
-                await player.store_song(ctx, videoId, True)
-            embed2 = discord.Embed(title="Playlist", description="Playlist has been successfully queued!", color=0x00ffff)
-            embed2.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            embed2.set_footer(text="Called by: {0}".format(ctx.author.display_name))
-            await ctx.send(embed=embed2, mention_author=False)
-        else:
-            await player.store_song(ctx, search, False)
-        '''
 
         if player.not_playing:
             await player.play_songs()
@@ -579,6 +571,23 @@ class Music(commands.Cog):
             embed = discord.Embed(title="Error", description="Invalid Input!", color=0xff0000)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             await ctx.send(embed=embed)
+
+    @commands.command(pass_context = True, brief='Shows the lyrics of the song', aliases=['lyric'])
+    async def lyrics(self, ctx):
+        player = self.get_player(ctx)
+        CURR_SONG = player.Queue._queue[player.Queue.pos].title
+
+        result = requests.get(f"https://some-random-api.ml/lyrics?title={CURR_SONG}")
+
+        data = json.loads(result.content)
+
+        embed = discord.Embed(title="Lyrics", description=data['lyrics'], color=0xfd00f5)
+        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+        await ctx.send(embed=embed)
+
+
+        
+            
 
     
 def setup(bot):
