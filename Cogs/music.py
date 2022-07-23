@@ -31,9 +31,6 @@ class EndOfQueue(commands.CommandError):
 class IndexOutOfBounds(commands.CommandError):
     pass
 
-class NoLyricsFound(commands.CommandError):
-    pass
-
 
 class Queue:
     def __init__(self):
@@ -573,17 +570,25 @@ class Music(commands.Cog):
             await ctx.send(embed=embed)
 
     @commands.command(pass_context = True, brief='Shows the lyrics of the song', aliases=['lyric'])
-    async def lyrics(self, ctx):
+    async def lyrics(self, ctx, *, search=''):
         player = self.get_player(ctx)
-        CURR_SONG = player.Queue._queue[player.Queue.pos].title
+        if search == '':
+            CURR_SONG = player.Queue._queue[player.Queue.pos].title
+        else:
+            CURR_SONG = search
 
         result = requests.get(f"https://some-random-api.ml/lyrics?title={CURR_SONG}")
 
         data = json.loads(result.content)
 
-        embed = discord.Embed(title="Lyrics", description=data['lyrics'], color=0xfd00f5)
-        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-        await ctx.send(embed=embed)
+        try:
+            embed = discord.Embed(title="Lyrics of {} by {}".format(data['title'],data['author']), description=data['lyrics'], color=0xfd00f5)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            await ctx.send(embed=embed)
+        except KeyError:
+            embed = discord.Embed(title="Uh Oh!", description="Could not find the lyrics of this song!", color=0xff0000)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            await ctx.send(embed=embed)
 
 
         
