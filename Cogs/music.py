@@ -17,6 +17,8 @@ from Utility import link_tools
 from Utility.link_tools import getSongs, validUrl, sortLink
 from Utility.spotify import SpotifyToYoutube
 
+from Utility import genius
+from Utility.genius import Genius_Client
 
 
 FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5','options': '-vn'}
@@ -228,6 +230,7 @@ class Music(commands.Cog):
         self.bot = bot
         self.players = {}
         self.S2Y = SpotifyToYoutube()
+        self.gclient = Genius_Client()
 
     async def cleanup(self, guild):
         try:
@@ -577,20 +580,11 @@ class Music(commands.Cog):
         else:
             CURR_SONG = search
 
-        result = requests.get(f"https://some-random-api.ml/lyrics?title={CURR_SONG}")
+        song = self.gclient.get_lyric(CURR_SONG)
 
-        data = json.loads(result.content)
-
-        try:
-            embed = discord.Embed(title="Lyrics of {} by {}".format(data['title'],data['author']), description=data['lyrics'], color=0xfd00f5)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            await ctx.send(embed=embed)
-        except KeyError:
-            embed = discord.Embed(title="Uh Oh!", description="Could not find the lyrics of this song!", color=0xff0000)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            await ctx.send(embed=embed)
-
-
+        embed = discord.Embed(title="Lyrics of {} by {}".format(song.title, song.artist), description = song.lyrics.replace("Embed",""), color=0xfd00f5)
+        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+        await ctx.send(embed=embed, mention_author=False)
         
             
 
