@@ -581,8 +581,14 @@ class Music(commands.Cog):
             CURR_SONG = search
 
         song = self.gclient.get_lyric(CURR_SONG)
-
-        embed = discord.Embed(title="Lyrics of {} by {}".format(song.title, song.artist), description = song.lyrics.replace("Embed",""), color=0xfd00f5)
+        if song is None:
+            embed = discord.Embed(title="Error", description="Could not find the lyrics to the song!", color=0xff0000)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            await ctx.send(embed=embed)
+            return
+        song_front_buffer = len(song.title + " lyrics")
+        song_back_buffer = len(song.lyrics)-5
+        embed = discord.Embed(title="Lyrics of {} by {}".format(song.title, song.artist), description = song.lyrics[song_front_buffer:song_back_buffer], color=0xfd00f5)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed, mention_author=False)
         
