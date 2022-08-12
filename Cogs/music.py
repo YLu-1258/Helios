@@ -366,18 +366,24 @@ class Music(commands.Cog):
     
     @commands.command(pass_context=True, brief="Makes the bot leave your channel", aliases=['l'])
     async def leave(self, ctx):
-        channel = ctx.message.author.voice.channel
+        channel = ctx.message.author.voice
+        channelid = ctx.message.author.voice
+        bot_channel = ctx.guild.me.voice
+        if channel == None:
+            embed = discord.Embed(title="Uh Oh!", description="You are not in a channel", color=0xff0000)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            return await ctx.send(embed=embed)
+        if not bot_channel:
+            embed = discord.Embed(title="Uh Oh!", description="I am not in a voice channel", color=0xff0000)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            return await ctx.send(embed=embed)
         channelid = ctx.message.author.voice.channel.id
         bot_channel = ctx.guild.me.voice.channel.id
+        channel = ctx.message.author.voice.channel
         if bot_channel != channelid:
-            await ctx.send("You are not in my channel")
-            return
-        elif not channel:
-            await ctx.send("You are not in a channel")
-            return
-        elif not channel:
-            await ctx.send("I am not in a voice channel")
-            return
+            embed = discord.Embed(title="Uh Oh!", description="You are not in my channel", color=0xff0000)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            return await ctx.send(embed=embed)
         voice = get(self.bot.voice_clients, guild=ctx.guild)
         if voice and voice.is_connected():
             await voice.disconnect()
@@ -386,7 +392,9 @@ class Music(commands.Cog):
             embed.set_footer(text="Called by {0}".format(ctx.author.display_name))
             await ctx.send(embed=embed)
         else:
-            await ctx.send("I am not in a voice channel")
+            embed = discord.Embed(title="Uh Oh!", description="I am not in a voice channel", color=0xff0000)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            return await ctx.send(embed=embed)
         await self.cleanup(ctx.guild)
 
 
