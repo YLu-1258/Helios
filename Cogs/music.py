@@ -278,6 +278,11 @@ class Music(commands.Cog):
 
     @commands.command(pass_context=True, brief="Joins the channel", aliases=['joi', 'j'])
     async def join(self, ctx):
+        channel = ctx.message.author.voice
+        if channel == None:
+            embed = discord.Embed(title="Uh Oh!", description="Join a voice channel before using this command", color=0xff0000)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            return await ctx.send(embed=embed)
         channel = ctx.message.author.voice.channel
         voice = get(ctx.guild.voice_channels, name=channel.name)
         voice_client = get(self.bot.voice_clients, guild=ctx.guild)
@@ -296,15 +301,17 @@ class Music(commands.Cog):
     async def play(self, ctx, *, search=''):
         """Plays a song"""
         channel = ctx.message.author.voice
-        if not channel:
-            await ctx.send("Join a voice channel before you use this command")
-            return
+        if channel == None:
+            embed = discord.Embed(title="Uh Oh!", description="Join a voice channel before using this command", color=0xff0000)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            return await ctx.send(embed=embed)
         if search == '':
-            await ctx.send("Please provide a song to play!")
-            return
+            embed = discord.Embed(title="Uh Oh!", description="Please provide something to play", color=0xff0000)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            return await ctx.send(embed=embed)
         
         # Get information about voice call 
-        channel = channel.channel
+        channel = ctx.message.author.voice.channel
         voice = get(ctx.guild.voice_channels, name=channel.name)
         voice_client = get(self.bot.voice_clients, guild=ctx.guild)
         player = self.get_player(ctx)
