@@ -460,7 +460,10 @@ class Music(commands.Cog):
             embed.set_footer(text="Please try again with a song")
             return await ctx.send(embed=embed)
         elif not vc.is_paused():
-            return
+            embed = discord.Embed(title="Uh Oh!", description="I am currently not playing anything", color=0xff0000)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_footer(text="Please try again with a song")
+            return await ctx.send(embed=embed)
 
         vc.resume()
         await ctx.message.add_reaction("⏯️")
