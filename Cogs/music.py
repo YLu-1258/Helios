@@ -521,15 +521,37 @@ class Music(commands.Cog):
     @commands.command(pass_context = True, brief='Displays the current Playlist/Queue', aliases=['playlist', 'q', 'plist', 'list'])
     async def queue(self, ctx, *, page=1):
         """Stops the currently playing song."""
+        channel = ctx.message.author.voice
+        channelid = ctx.message.author.voice
+        bot_channel = ctx.guild.me.voice
+        if channel == None:
+            embed = discord.Embed(title="Uh Oh!", description="You are not in a channel", color=0xff0000)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            return await ctx.send(embed=embed)
+        if not bot_channel:
+            embed = discord.Embed(title="Uh Oh!", description="I am not in a voice channel", color=0xff0000)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            return await ctx.send(embed=embed)
+        channelid = ctx.message.author.voice.channel.id
+        bot_channel = ctx.guild.me.voice.channel.id
+        channel = ctx.message.author.voice.channel
+        if bot_channel != channelid:
+            embed = discord.Embed(title="Uh Oh!", description="You are not in my channel", color=0xff0000)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            return await ctx.send(embed=embed)
+        player = self.get_player(ctx)
         try:
             page = int(page)
         except:
             embed = discord.Embed(title="Error", description="Please Give me a number!", color=0xff0000)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            embed.set_thumbnail(url=player.Queue._queue[player.Queue.pos].thumb)
+            return await ctx.send(embed=embed)
+        try:
+            await player.print_queue(page)
+        except:
+            embed = discord.Embed(title="Error", description="Invalid Input!", color=0xff0000)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             await ctx.send(embed=embed)
-        player = self.get_player(ctx)
-        await player.print_queue(page)
 
     @commands.command(pass_context = True, brief='loops a way based on input', aliases=['lop'])
     async def loop(self, ctx, pos='current'):
