@@ -401,8 +401,25 @@ class Music(commands.Cog):
     @commands.command(pass_context=True, brief='Pauses the currently playing music', aliases=['pa','st', 'stp', 'stop'])
     async def pause(self, ctx):
         """Pause the currently playing song."""
-        vc = ctx.voice_client
-
+        channel = ctx.message.author.voice
+        channelid = ctx.message.author.voice
+        bot_channel = ctx.guild.me.voice
+        if channel == None:
+            embed = discord.Embed(title="Uh Oh!", description="You are not in a channel", color=0xff0000)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            return await ctx.send(embed=embed)
+        if not bot_channel:
+            embed = discord.Embed(title="Uh Oh!", description="I am not in a voice channel", color=0xff0000)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            return await ctx.send(embed=embed)
+        channelid = ctx.message.author.voice.channel.id
+        bot_channel = ctx.guild.me.voice.channel.id
+        channel = ctx.message.author.voice.channel
+        if bot_channel != channelid:
+            embed = discord.Embed(title="Uh Oh!", description="You are not in my channel", color=0xff0000)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            return await ctx.send(embed=embed)
+        vc = get(self.bot.voice_clients, guild=ctx.guild)
         if not vc or not vc.is_playing():
             embed = discord.Embed(title="Uh Oh!", description="I am currently not playing anything", color=0xff0000)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
@@ -418,10 +435,27 @@ class Music(commands.Cog):
     @commands.command(pass_context = True, brief='Resumes the currently paused track', aliases=['r', 're','start'])
     async def resume(self, ctx):
         """Resume the currently paused song."""
-        vc = ctx.voice_client
-
-        if not vc or not vc.is_connected():
-            embed = discord.Embed(title="Uh Oh!", description="I'm not connected to a voice channel or there are no currently playing songs", color=0xff0000)
+        channel = ctx.message.author.voice
+        channelid = ctx.message.author.voice
+        bot_channel = ctx.guild.me.voice
+        if channel == None:
+            embed = discord.Embed(title="Uh Oh!", description="You are not in a channel", color=0xff0000)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            return await ctx.send(embed=embed)
+        if not bot_channel:
+            embed = discord.Embed(title="Uh Oh!", description="I am not in a voice channel", color=0xff0000)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            return await ctx.send(embed=embed)
+        channelid = ctx.message.author.voice.channel.id
+        bot_channel = ctx.guild.me.voice.channel.id
+        channel = ctx.message.author.voice.channel
+        if bot_channel != channelid:
+            embed = discord.Embed(title="Uh Oh!", description="You are not in my channel", color=0xff0000)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            return await ctx.send(embed=embed)
+        vc = get(self.bot.voice_clients, guild=ctx.guild)
+        if not vc or vc.is_playing():
+            embed = discord.Embed(title="Uh Oh!", description="I am already playing something", color=0xff0000)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             embed.set_footer(text="Please try again with a song")
             return await ctx.send(embed=embed)
