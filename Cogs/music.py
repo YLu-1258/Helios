@@ -491,11 +491,6 @@ class Music(commands.Cog):
             return await ctx.send(embed=embed)
         vc = get(self.bot.voice_clients, guild=ctx.guild)
         player = self.get_player(ctx)
-        if not vc or not vc.is_playing():
-            embed = discord.Embed(title="Uh Oh!", description="I am currently not playing anything", color=0xff0000)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            embed.set_footer(text="Please try again with a song")
-            return await ctx.send(embed=embed)
 
         if pos is None:
             vc.stop()
@@ -570,11 +565,6 @@ class Music(commands.Cog):
             return await ctx.send(embed=embed)
         vc = get(self.bot.voice_clients, guild=ctx.guild)
         player = self.get_player(ctx)
-        if not vc or not vc.is_playing():
-            embed = discord.Embed(title="Uh Oh!", description="I am currently not playing anything", color=0xff0000)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            embed.set_footer(text="Please try again with a song")
-            return await ctx.send(embed=embed)
         if pos in ('0', 'un' , 'u'):
             player.Queue.repmode = 0
             embed = discord.Embed(title="Unlooping Song/Track!", color=0xfd00f5)
@@ -619,11 +609,6 @@ class Music(commands.Cog):
             return await ctx.send(embed=embed)
         vc = get(self.bot.voice_clients, guild=ctx.guild)
         player = self.get_player(ctx)
-        if not vc or not vc.is_playing():
-            embed = discord.Embed(title="Uh Oh!", description="I am currently not playing anything", color=0xff0000)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            embed.set_footer(text="Please try again with a song")
-            return await ctx.send(embed=embed)
         random.shuffle(player.Queue._queue)
         
         embed = discord.Embed(title="Shuffling Track!", color=0xfd00f5)
@@ -657,11 +642,6 @@ class Music(commands.Cog):
             return await ctx.send(embed=embed)
         vc = get(self.bot.voice_clients, guild=ctx.guild)
         player = self.get_player(ctx)
-        if not vc or not vc.is_playing():
-            embed = discord.Embed(title="Uh Oh!", description="I am currently not playing anything", color=0xff0000)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            embed.set_footer(text="Please try again with a song")
-            return await ctx.send(embed=embed)
         if pos == 'current':
             pos=player.Queue.pos
             embed = discord.Embed(title="Removing Song", description="Song **{0}** by *{1}* has been removed".format(player.Queue._queue[pos].title, player.Queue._queue[pos].author), color=0xfd00f5)
@@ -718,15 +698,10 @@ class Music(commands.Cog):
             return await ctx.send(embed=embed)
         vc = get(self.bot.voice_clients, guild=ctx.guild)
         player = self.get_player(ctx)
-        if not vc or not vc.is_playing():
-            embed = discord.Embed(title="Uh Oh!", description="I am currently not playing anything", color=0xff0000)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            embed.set_footer(text="Please try again with a song")
-            return await ctx.send(embed=embed)
         if player.Queue._queue:
             await player.currently_playing()
         else:
-            embed = discord.Embed(title="Uh Oh!", description="I'm not connected to a voice channel or there are no currently playing songs", color=0xff0000)
+            embed = discord.Embed(title="Uh Oh!", description="There are no currently playing songs", color=0xff0000)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             embed.set_footer(text="Please try again with a song")
             return await ctx.send(embed=embed)
@@ -753,11 +728,6 @@ class Music(commands.Cog):
             return await ctx.send(embed=embed)
         vc = get(self.bot.voice_clients, guild=ctx.guild)
         player = self.get_player(ctx)
-        if not vc or not vc.is_playing():
-            embed = discord.Embed(title="Uh Oh!", description="I am currently not playing anything", color=0xff0000)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            embed.set_footer(text="Please try again with a song")
-            return await ctx.send(embed=embed)
         if pos in ("all", "a", "track"):
             embed = discord.Embed(title="Restarting Track!", color=0xfd00f5)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
@@ -801,11 +771,6 @@ class Music(commands.Cog):
                 return await ctx.send(embed=embed)
             vc = get(self.bot.voice_clients, guild=ctx.guild)
             player = self.get_player(ctx)
-            if not vc or not vc.is_playing():
-                embed = discord.Embed(title="Uh Oh!", description="I am currently not playing anything", color=0xff0000)
-                embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-                embed.set_footer(text="Please try again with a song")
-                return await ctx.send(embed=embed)
             CURR_SONG = player.Queue._queue[player.Queue.pos].title
         else:
             CURR_SONG = search
