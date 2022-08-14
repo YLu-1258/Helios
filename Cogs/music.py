@@ -540,12 +540,7 @@ class Music(commands.Cog):
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             return await ctx.send(embed=embed)
         player = self.get_player(ctx)
-        try:
-            page = int(page)
-        except:
-            embed = discord.Embed(title="Error", description="Please Give me a number!", color=0xff0000)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            return await ctx.send(embed=embed)
+        page = int(page)
         try:
             await player.print_queue(page)
         except:
