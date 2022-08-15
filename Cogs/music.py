@@ -200,9 +200,13 @@ class Player(commands.Cog):
                 tracklist.append("")
                 tracklist[i] = tracklist[i] + str(song+1) + ") **{0}** by *{1}*".format(self.Queue._queue[song].title, self.Queue._queue[song].author) + "\n"
         content = tracklist[page-1]
-        embed = discord.Embed(title="Playlist ", description=content, color=0xfd00f5)
-        embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
-        embed.set_footer(text="Currently displaying page {0}\n".format(str(page)))
+        total_page=0
+        if len(self.Queue._queue) % 10 != 0:
+                total_page = len(self.Queue._queue) // 10 +1
+        else:
+            total_page= len(self.Queue._queue) // 10
+        embed = discord.Embed(title="Song Playlist", description=content, color=0xfd00f5)
+        embed.set_footer(text="Displaying page {0} of {1}".format(str(page),total_page))
         await self.ctx.send(embed=embed, mention_author=False)
 
     async def currently_playing(self):
