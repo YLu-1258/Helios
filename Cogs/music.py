@@ -170,10 +170,8 @@ class Player(commands.Cog):
                 source = FFmpegPCMAudio(audio.url, **FFMPEG_OPTIONS)  # converts the youtube audio source into a source discord can use
                 # Play music
                 self.current = source
-                embed2 = discord.Embed(title="Playing Song!", description="Now playing: **{0}** by *{1}*".format(self._song.title, self._song.author), color=0x00ffff, url="https://www.youtube.com/watch?v={0}".format(self._song.videoid))
-                embed2.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+                embed2 = discord.Embed(title="Now Playing", description="**{0}** by *{1}*\nDuration: {2}".format(self._song.title, self._song.author, self._song.duration), color=0x00ffff, url="https://www.youtube.com/watch?v={0}".format(self._song.videoid))
                 embed2.set_thumbnail(url=self._song.thumb)
-                embed2.set_footer(text="Duration: {0}".format(str(self._song.duration)))
                 self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
                 if self.Queue.repmode != 1:
                     await self.ctx.send(embed=embed2)
@@ -181,9 +179,7 @@ class Player(commands.Cog):
                 self.current = None
                 self.Queue.next_song()
             except EndOfQueue:
-                embed3 = discord.Embed(title="Uh oh! ", description="The Queue has Ended, Player will now terminate.", color=0xffff00)
-                embed3.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
-                embed3.set_footer(text="We hope you had fun!")
+                embed3 = discord.Embed(title="Queue has Ended", description="I have left the channel", color=0xffff00)
                 await self.ctx.send(embed=embed3, mention_author=False)
                 return self.destroy(self._guild)
 
