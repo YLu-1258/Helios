@@ -397,25 +397,24 @@ class Music(commands.Cog):
         channelid = ctx.message.author.voice
         bot_channel = ctx.guild.me.voice
         if channel == None:
-            embed = discord.Embed(title="Uh Oh!", description="You are not in a channel", color=0xff9900)
+            embed = discord.Embed(title="Uh Oh!", description="Join a voice channel before using this command", color=0xff9900)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             return await ctx.send(embed=embed)
         if not bot_channel:
-            embed = discord.Embed(title="Uh Oh!", description="I am not in a voice channel", color=0xff9900)
+            embed = discord.Embed(title="Uh Oh!", description="I need to join a channel before using this command", color=0xff9900)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             return await ctx.send(embed=embed)
         channelid = ctx.message.author.voice.channel.id
         bot_channel = ctx.guild.me.voice.channel.id
         channel = ctx.message.author.voice.channel
         if bot_channel != channelid:
-            embed = discord.Embed(title="Uh Oh!", description="You are not in my channel", color=0xff9900)
+            embed = discord.Embed(title="Uh Oh!", description="Join my channel before using this command", color=0xff9900)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             return await ctx.send(embed=embed)
         vc = get(self.bot.voice_clients, guild=ctx.guild)
         if not vc or not vc.is_playing():
             embed = discord.Embed(title="Uh Oh!", description="I am currently not playing anything", color=0xff9900)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            embed.set_footer(text="Please try again with a song")
             return await ctx.send(embed=embed)
         elif vc.is_paused():
             return
@@ -431,30 +430,28 @@ class Music(commands.Cog):
         channelid = ctx.message.author.voice
         bot_channel = ctx.guild.me.voice
         if channel == None:
-            embed = discord.Embed(title="Uh Oh!", description="You are not in a channel", color=0xff9900)
+            embed = discord.Embed(title="Uh Oh!", description="Join a voice channel before using this command", color=0xff9900)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             return await ctx.send(embed=embed)
         if not bot_channel:
-            embed = discord.Embed(title="Uh Oh!", description="I am not in a voice channel", color=0xff9900)
+            embed = discord.Embed(title="Uh Oh!", description="I need to join a channel before using this command", color=0xff9900)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             return await ctx.send(embed=embed)
         channelid = ctx.message.author.voice.channel.id
         bot_channel = ctx.guild.me.voice.channel.id
         channel = ctx.message.author.voice.channel
         if bot_channel != channelid:
-            embed = discord.Embed(title="Uh Oh!", description="You are not in my channel", color=0xff9900)
+            embed = discord.Embed(title="Uh Oh!", description="Join my channel before using this command", color=0xff9900)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             return await ctx.send(embed=embed)
         vc = get(self.bot.voice_clients, guild=ctx.guild)
         if not vc or vc.is_playing():
             embed = discord.Embed(title="Uh Oh!", description="I am already playing something", color=0xff9900)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            embed.set_footer(text="Please try again with a song")
             return await ctx.send(embed=embed)
         elif not vc.is_paused():
             embed = discord.Embed(title="Uh Oh!", description="I am currently not playing anything", color=0xff9900)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            embed.set_footer(text="Please try again with a song")
             return await ctx.send(embed=embed)
 
         vc.resume()
