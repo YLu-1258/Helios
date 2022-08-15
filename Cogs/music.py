@@ -505,11 +505,11 @@ class Music(commands.Cog):
                 vc.stop()
                 await ctx.message.add_reaction("⏹️")
             else:
-                embed = discord.Embed(title="Error", description="Invalid Input!", color=0xff0000)
+                embed = discord.Embed(title="Error", description="Invalid Input!", color=0xff0066)
                 embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
                 await ctx.send(embed=embed)
         except:
-            embed = discord.Embed(title="Error", description="Invalid Input!", color=0xff0000)
+            embed = discord.Embed(title="Error", description="Invalid Input!", color=0xff0066)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             await ctx.send(embed=embed)            
 
@@ -539,7 +539,7 @@ class Music(commands.Cog):
         try:
             await player.print_queue(page)
         except:
-            embed = discord.Embed(title="Error", description="Invalid Input!", color=0xff0000)
+            embed = discord.Embed(title="Error", description="Invalid Input!", color=0xff0066)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             await ctx.send(embed=embed)
 
@@ -583,7 +583,7 @@ class Music(commands.Cog):
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             await ctx.send(embed=embed, mention_author=False)
         else:
-            embed = discord.Embed(title="Error", description="Invalid Input!", color=0xff0000)
+            embed = discord.Embed(title="Error", description="Invalid Input!", color=0xff0066)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             await ctx.send(embed=embed)
 
@@ -672,7 +672,7 @@ class Music(commands.Cog):
                 player.Queue.pos-=1
             await ctx.send(embed=embed, mention_author=False)
         except:
-            embed = discord.Embed(title="Error", description="Invalid Input!", color=0xff0000)
+            embed = discord.Embed(title="Error", description="Invalid Input!", color=0xff0066)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             await ctx.send(embed=embed)
 
@@ -701,7 +701,7 @@ class Music(commands.Cog):
         if player.Queue._queue:
             await player.currently_playing()
         else:
-            embed = discord.Embed(title="Uh Oh!", description="There are no currently playing songs", color=0xff0000)
+            embed = discord.Embed(title="Uh Oh!", description="There are no currently playing songs", color=0xff9900)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             embed.set_footer(text="Please try again with a song")
             return await ctx.send(embed=embed)
@@ -743,7 +743,7 @@ class Music(commands.Cog):
             player.Queue.pos-=1
             vc.stop()
         else:
-            embed = discord.Embed(title="Error", description="Invalid Input!", color=0xff0000)
+            embed = discord.Embed(title="Error", description="Invalid Input!", color=0xff4d94)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             await ctx.send(embed=embed)
 
