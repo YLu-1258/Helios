@@ -126,7 +126,7 @@ class Player(commands.Cog):
     async def store_song(self, ctx, inp_song, playlist = False):
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel and \
-            msg.content in ("1","2","3","cancel", "Cancel", "c", "C")
+            msg.content in ("p1","p2","p3","cancel", "Cancel", "c", "C")
             
         if not validUrl(inp_song):
             inp_song = inp_song.replace(" ", "+")
@@ -135,28 +135,26 @@ class Player(commands.Cog):
             track_list = ""
             for i in range(0,3):
                 song = pafy.new(video_ids[i])
-                track_list = track_list + str(i+1)+ ") **{0}** by *{1}*".format(song.title, song.author) +  "\n"
-            embed1 = discord.Embed(title="Please select a song", description=track_list, color=0x00ffff)
+                track_list = track_list + "p" + str(i+1)+ ") **{0}** by *{1}*".format(song.title, song.author) +  "\n"
+            embed1 = discord.Embed(title="Please Select a Song", description=track_list, color=0x00ffff)
             embed1.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            embed1.set_footer(text="Pick an Index 1-3.")
+            embed1.set_footer(text="Pick an option or type 'cancel'")
             await ctx.send(embed=embed1, mention_author=False)
             msg = await self.bot.wait_for("message", check=check)
             if msg.content in ("cancel", "Cancel", "c", "C"):
-                embed1 = discord.Embed(title="Cancelling song selection", description="Please try again", color=0xff0000)
+                embed1 = discord.Embed(title="Song Selection Cancelled", description="Please try again", color=0xff0066)
                 embed1.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-                embed1.set_footer(text="Called by {0}".format(ctx.author.display_name))
                 await ctx.send(embed=embed1, mention_author=False)
                 return
-            song_id = int(msg.content)-1
+            song_id = int(msg.content[-1])-1
             song = pafy.new(video_ids[song_id])
         else:
             song = pafy.new(inp_song)
         
         self.Queue.add_song(song)
         if not playlist:
-            embed2 = discord.Embed(title="Song", description="Song **{0}** by *{1}* has been successfully queued!".format(song.title, song.author), color=0x00ffff)
+            embed2 = discord.Embed(title="Successfully Queued", description="Song **{0}** by *{1}*".format(song.title, song.author), color=0x00ffff)
             embed2.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            embed2.set_footer(text="Called by: {0}".format(ctx.author.display_name))
             await ctx.send(embed=embed2, mention_author=False)
         
 
