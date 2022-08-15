@@ -129,27 +129,46 @@ class Player(commands.Cog):
             msg.content in ("p1","p2","p3","cancel", "Cancel", "c", "C")
             
         if not validUrl(inp_song):
-            inp_song = inp_song.replace(" ", "+")
-            raw = request.urlopen("https://www.youtube.com/results?search_query=" + quote(inp_song))
-            video_ids = re.findall(r"watch\?v=(\S{11})", raw.read().decode()) # getting youtube video id with custom ReGEX
-            track_list = ""
-            for i in range(0,3):
-                song = pafy.new(video_ids[i])
-                track_list = track_list + "p" + str(i+1)+ ") **{0}** by *{1}*".format(song.title, song.author) +  "\n"
-            embed1 = discord.Embed(title="Please Select a Song", description=track_list, color=0x00ffff)
-            embed1.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            embed1.set_footer(text="Pick an option or type 'cancel'")
-            await ctx.send(embed=embed1, mention_author=False)
-            msg = await self.bot.wait_for("message", check=check)
-            if msg.content in ("cancel", "Cancel", "c", "C"):
-                embed1 = discord.Embed(title="Song Selection Cancelled", description="Please try again", color=0xff0066)
+            try:
+                inp_song = inp_song.replace(" ", "+")
+                raw = request.urlopen("https://www.youtube.com/results?search_query=" + quote(inp_song))
+                video_ids = re.findall(r"watch\?v=(\S{11})", raw.read().decode()) # getting youtube video id with custom ReGEX
+                track_list = ""
+                for i in range(0,3):
+                    song = pafy.new(video_ids[i])
+                    track_list = track_list + "p" + str(i+1)+ ") **{0}** by *{1}*".format(song.title, song.author) +  "\n"
+                embed1 = discord.Embed(title="Please Select a Song", description=track_list, color=0x00ffff)
+                embed1.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+                embed1.set_footer(text="Pick an option or type 'cancel'")
+                await ctx.send(embed=embed1, mention_author=False)
+                msg = await self.bot.wait_for("message", check=check)
+                if msg.content in ("cancel", "Cancel", "c", "C"):
+                    embed1 = discord.Embed(title="Song Selection Cancelled", description="Please try again", color=0xff0066)
+                    embed1.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+                    await ctx.send(embed=embed1, mention_author=False)
+                    return
+                song_id = int(msg.content[-1])-1
+                song = pafy.new(video_ids[song_id])
+            except:
+                embed1 = discord.Embed(title="Uh Oh!", description="Could not load requested song", color=0xff0066)
                 embed1.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
                 await ctx.send(embed=embed1, mention_author=False)
                 return
-            song_id = int(msg.content[-1])-1
-            song = pafy.new(video_ids[song_id])
         else:
-            song = pafy.new(inp_song)
+            song = 'filler'
+            if playlist:
+                try:
+                    song = pafy.new(inp_song)
+                except:
+                    return
+            else:
+                try:
+                    song = pafy.new(inp_song)
+                except:
+                    embed1 = discord.Embed(title="Uh Oh!", description="Could not load requested song", color=0xff0066)
+                    embed1.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+                    await ctx.send(embed=embed1, mention_author=False)
+                    return
         
         self.Queue.add_song(song)
         if not playlist:
@@ -353,7 +372,7 @@ class Music(commands.Cog):
             await player.store_song(ctx, search, False)
         
 
-        if player.not_playing:
+        if player.not_playing and player.Queue._queue:
             await player.play_songs()
         
     
