@@ -288,8 +288,7 @@ class Music(commands.Cog):
         else:
             await voice_client.move_to(channel)
         await ctx.guild.change_voice_state(channel=channel, self_mute=True, self_deaf=True)
-        embed = discord.Embed(title="Voice ", description=f"Joined {channel}", color=0xfd00f5)
-        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+        embed = discord.Embed(title=f"Joined {channel}", color=0xfd00f5)
         embed.set_footer(text="Called by {0}".format(ctx.author.display_name))
         await ctx.send(embed=embed)
 
@@ -331,9 +330,8 @@ class Music(commands.Cog):
             ids = getSongs(search)
             for videoId in ids:
                 await player.store_song(ctx, videoId, True)
-            embed2 = discord.Embed(title="Playlist", description="Playlist has been successfully queued!", color=0x00ffff)
+            embed2 = discord.Embed(title="Requested Playlist has Been Queued", color=0x00ffff)
             embed2.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            embed2.set_footer(text="Called by: {0}".format(ctx.author.display_name))
             await ctx.send(embed=embed2, mention_author=False)
 
         # Spotify Song
@@ -346,9 +344,8 @@ class Music(commands.Cog):
             pl = self.S2Y.playlist_to_yt(search)
             for query in pl:
                 await player.store_song(ctx, query, True)
-            embed2 = discord.Embed(title="Playlist", description="Playlist has been successfully queued!", color=0x00ffff)
+            embed2 = discord.Embed(title="Requested Playlist has Been Queued", color=0x00ffff)
             embed2.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            embed2.set_footer(text="Called by: {0}".format(ctx.author.display_name))
             await ctx.send(embed=embed2, mention_author=False)
         
         # Search By Name
