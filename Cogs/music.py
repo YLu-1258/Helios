@@ -628,7 +628,7 @@ class Music(commands.Cog):
         vc = ctx.voice_client
         vc.stop()
     
-    @commands.command(pass_context = True, brief='Removes the song at the index', aliases=['r', "delete"])
+    @commands.command(pass_context = True, brief='Removes the song at the index', aliases=['rm', "delete"])
     async def remove(self, ctx, pos='current'):
         channel = ctx.message.author.voice
         channelid = ctx.message.author.voice
