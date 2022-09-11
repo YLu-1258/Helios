@@ -291,7 +291,7 @@ class Music(commands.Cog):
 
         return player
 
-    @commands.command(pass_context=True, brief="Joins the channel", aliases=['joi', 'j'])
+    @commands.command(pass_context=True, brief="Joins the channel", aliases=['j'])
     async def join(self, ctx):
         channel = ctx.message.author.voice
         if channel == None:
@@ -311,7 +311,7 @@ class Music(commands.Cog):
         embed.set_footer(text="Called by {0}".format(ctx.author.display_name))
         await ctx.send(embed=embed)
 
-    @commands.command(pass_context=True, brief="plays a song!", aliases=['p', 'paly', 'pl'])
+    @commands.command(pass_context=True, brief="plays a song!", aliases=['p'])
     async def play(self, ctx, *, search=''):
         """Plays a song"""
         channel = ctx.message.author.voice
@@ -409,7 +409,7 @@ class Music(commands.Cog):
         await self.cleanup(ctx.guild)
 
 
-    @commands.command(pass_context=True, brief='Pauses the currently playing music', aliases=['pa','st', 'stp', 'stop'])
+    @commands.command(pass_context=True, brief='Pauses the currently playing music', aliases=['pa', 'stop'])
     async def pause(self, ctx):
         """Pause the currently playing song."""
         channel = ctx.message.author.voice
@@ -442,7 +442,7 @@ class Music(commands.Cog):
         await ctx.message.add_reaction("⏸️")
 
 
-    @commands.command(pass_context = True, brief='Resumes the currently paused track', aliases=['r', 're','start'])
+    @commands.command(pass_context = True, brief='Resumes the currently paused track', aliases=['re','start'])
     async def resume(self, ctx):
         """Resume the currently paused song."""
         channel = ctx.message.author.voice
@@ -476,7 +476,7 @@ class Music(commands.Cog):
         vc.resume()
         await ctx.message.add_reaction("⏯️")
 
-    @commands.command(pass_context = True, brief='Stops the current track', aliases=["sk","next",'skipto','skt'])
+    @commands.command(pass_context = True, brief='Stops the current track', aliases=["sk","next"])
     async def skip(self, ctx, pos=None):
         """Stops\Skips the currently playing song."""
         channel = ctx.message.author.voice
@@ -521,7 +521,7 @@ class Music(commands.Cog):
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             await ctx.send(embed=embed)            
 
-    @commands.command(pass_context = True, brief='Displays the current Playlist/Queue', aliases=['playlist', 'q', 'plist', 'list'])
+    @commands.command(pass_context = True, brief='Displays the current Playlist/Queue', aliases=['playlist', 'q'])
     async def queue(self, ctx, *, page=1):
         """Stops the currently playing song."""
         channel = ctx.message.author.voice
@@ -595,7 +595,7 @@ class Music(commands.Cog):
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             await ctx.send(embed=embed)
 
-    @commands.command(pass_context = True, brief='shuffles track', aliases=['shuffletrack','shuffleall'])
+    @commands.command(pass_context = True, brief='shuffles track', aliases=['sh'])
     async def shuffle(self, ctx):
         channel = ctx.message.author.voice
         channelid = ctx.message.author.voice
@@ -628,7 +628,7 @@ class Music(commands.Cog):
         vc = ctx.voice_client
         vc.stop()
     
-    @commands.command(pass_context = True, brief='Removes the song at the index', aliases=['rm', "del", "delete"])
+    @commands.command(pass_context = True, brief='Removes the song at the index', aliases=['r', "delete"])
     async def remove(self, ctx, pos='current'):
         channel = ctx.message.author.voice
         channelid = ctx.message.author.voice
@@ -684,7 +684,7 @@ class Music(commands.Cog):
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             await ctx.send(embed=embed)
 
-    @commands.command(pass_context = True, brief='Shows currently playing song', aliases=["current_playing",'current',"curr", "cur"])
+    @commands.command(pass_context = True, brief='Shows currently playing song', aliases=['info', "cur"])
     async def current_song(self, ctx):
         channel = ctx.message.author.voice
         channelid = ctx.message.author.voice
@@ -713,7 +713,7 @@ class Music(commands.Cog):
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             return await ctx.send(embed=embed)
 
-    @commands.command(pass_context = True, brief='restarts a song')
+    @commands.command(pass_context = True, brief='restarts a song', aliases=['rep'])
     async def restart(self, ctx, pos=''):
         channel = ctx.message.author.voice
         channelid = ctx.message.author.voice
@@ -754,7 +754,7 @@ class Music(commands.Cog):
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             await ctx.send(embed=embed)
 
-    @commands.command(pass_context = True, brief='Shows the lyrics of the song', aliases=['lyric'])
+    @commands.command(pass_context = True, brief='Shows the lyrics of the song', aliases=['lyric', 'lyr'])
     async def lyrics(self, ctx, *, search=''):
         player = self.get_player(ctx)
         if search == '':
