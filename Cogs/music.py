@@ -258,29 +258,6 @@ class Music(commands.Cog):
         except KeyError:
             pass
 
-    @commands.Cog.listener()
-    async def on_voice_state_update(self, member, before, after):
-        voice = get(self.bot.voice_clients, guild=member.guild)
-
-        if member.bot or voice == None or before.channel == after.channel: # if bot called func or bot is not in vc or person mutes/deafeans ignore
-            return
-
-        elif before.channel and after.channel and before.channel == voice.channel: #player joined a different channel
-            if not [m for m in voice.channel.members if not m.bot]:
-                await asyncio.sleep(300)
-                
-                if not [m for m in voice.channel.members if not m.bot]:
-                    await voice.disconnect()
-                    await self.cleanup(member.guild)
-
-        elif before.channel and after.channel is None and before.channel == voice.channel: #if player leaves a channel
-            if not [m for m in voice.channel.members if not m.bot]:
-                await asyncio.sleep(300)
-
-                if not [m for m in voice.channel.members if not m.bot]:
-                    await voice.disconnect()
-                    await self.cleanup(member.guild)
-
     def get_player(self, ctx): # Function I found pretty useful
         """Retrieve the guild player, or generate one."""
         try:
@@ -290,6 +267,45 @@ class Music(commands.Cog):
             self.players[ctx.guild.id] = player
 
         return player
+
+    @commands.Cog.listener()
+    async def on_voice_state_update(self, member, before, after):
+        voice = get(self.bot.voice_clients, guild=member.guild)
+        if member.bot: # if bot called func or bot is not in vc or person mutes/deafeans ignore
+            if before.channel and after.channel is None:
+                try:
+                    await voice.stop()
+                    await voice.disconnect()
+                except:
+                    pass
+                print("force disconnect ")
+                print(member.guild.id)
+                await self.cleanup(member.guild)
+                return
+            else:
+                return
+
+        if voice==None:
+            return
+
+        if before.channel == after.channel:
+            return 
+
+        elif before.channel and after.channel and before.channel == voice.channel: #player joined a different channel
+            if not [m for m in voice.channel.members if not m.bot]:
+                await asyncio.sleep(10)
+                
+                if not [m for m in voice.channel.members if not m.bot]:
+                    await voice.disconnect()
+                    await self.cleanup(member.guild)
+
+        elif before.channel and after.channel is None and before.channel == voice.channel: #if player leaves a channel
+            if not [m for m in voice.channel.members if not m.bot]:
+                await asyncio.sleep(10)
+
+                if not [m for m in voice.channel.members if not m.bot]:
+                    await voice.disconnect()
+                    await self.cleanup(member.guild)
 
     @commands.command(pass_context=True, brief="Joins the channel", aliases=['j'])
     async def join(self, ctx):
@@ -311,7 +327,7 @@ class Music(commands.Cog):
         embed.set_footer(text="Called by {0}".format(ctx.author.display_name))
         await ctx.send(embed=embed)
 
-    @commands.command(pass_context=True, brief="plays a song!", aliases=['p'])
+    @commands.command(pass_context=True, brief="plays a song!", aliases=['p','paly'])
     async def play(self, ctx, *, search=''):
         """Plays a song"""
         channel = ctx.message.author.voice
@@ -406,7 +422,6 @@ class Music(commands.Cog):
             embed = discord.Embed(title="Uh Oh!", description="Join a voice channel before using this command", color=0xff9900)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             return await ctx.send(embed=embed)
-        await self.cleanup(ctx.guild)
 
 
     @commands.command(pass_context=True, brief='Pauses the currently playing music', aliases=['pa', 'stop'])
@@ -793,8 +808,6 @@ class Music(commands.Cog):
         embed = discord.Embed(title="Lyrics of {} by {}".format(song.title, song.artist), description = song.lyrics[song_front_buffer:song_back_buffer], color=0xfd00f5)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed, mention_author=False)
-        
-            
 
     
 def setup(bot):
