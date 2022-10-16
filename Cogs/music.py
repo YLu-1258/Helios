@@ -129,31 +129,40 @@ class Player(commands.Cog):
             msg.content in ("p1","p2","p3","cancel", "Cancel", "c", "C")
             
         if not validUrl(inp_song):
-            try:
-                inp_song = inp_song.replace(" ", "+")
-                raw = request.urlopen("https://www.youtube.com/results?search_query=" + quote(inp_song))
-                video_ids = re.findall(r"watch\?v=(\S{11})", raw.read().decode()) # getting youtube video id with custom ReGEX
-                track_list = ""
-                for i in range(0,3):
-                    song = pafy.new(video_ids[i])
-                    track_list = track_list + "p" + str(i+1)+ ") **{0}** by *{1}*".format(song.title, song.author) +  "\n"
-                embed1 = discord.Embed(title="Please Select a Song", description=track_list, color=0x00ffff)
-                embed1.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-                embed1.set_footer(text="Pick an option or type 'cancel'")
-                await ctx.send(embed=embed1, mention_author=False)
-                msg = await self.bot.wait_for("message", check=check)
-                if msg.content in ("cancel", "Cancel", "c", "C"):
-                    embed1 = discord.Embed(title="Song Selection Cancelled", description="Please try again", color=0xff0066)
+            inp_song = inp_song.replace(" ", "+")
+            raw = request.urlopen("https://www.youtube.com/results?search_query=" + quote(inp_song))
+            video_ids = re.findall(r"watch\?v=(\S{11})", raw.read().decode()) # getting youtube video id with custom ReGEX
+            track_list = ""
+            i=0
+            counter=0
+            tracker = {}
+            while i<3:
+                try:
+                    song = pafy.new(video_ids[counter])
+                    track_list += "p" + str(i+1)+ ") **{0}** by *{1}*".format(song.title, song.author) +  "\n"
+                    tracker[i] = counter
+                    counter+=1
+                    i+=1
+                except:
+                    counter+=1
+                    continue
+                if(i<3 and counter==10):
+                    embed1 = discord.Embed(title="Uh Oh!", description="Could not load requested song", color=0xff0066)
                     embed1.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
                     await ctx.send(embed=embed1, mention_author=False)
                     return
-                song_id = int(msg.content[-1])-1
-                song = pafy.new(video_ids[song_id])
-            except:
-                embed1 = discord.Embed(title="Uh Oh!", description="Could not load requested song", color=0xff0066)
+            embed1 = discord.Embed(title="Please Select a Song", description=track_list, color=0x00ffff)
+            embed1.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed1.set_footer(text="Pick an option or type 'cancel'")
+            await ctx.send(embed=embed1, mention_author=False)
+            msg = await self.bot.wait_for("message", check=check)
+            if msg.content in ("cancel", "Cancel", "c", "C"):
+                embed1 = discord.Embed(title="Song Selection Cancelled", description="Please try again", color=0xff0066)
                 embed1.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
                 await ctx.send(embed=embed1, mention_author=False)
                 return
+            song_id = tracker[int(msg.content[-1])-1]
+            song = pafy.new(video_ids[song_id])
         else:
             song = 'filler'
             if playlist:
