@@ -1,2 +1,3 @@
 *.log options.py
-git rm --cached public/app/options.py
+public/app/options.py
+git rm --cached public/app/template.js
