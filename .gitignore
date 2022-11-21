@@ -1,2 +1,1 @@
-public/app/options.py
-git rm --cached public/app/options.py
+*.log options.py
