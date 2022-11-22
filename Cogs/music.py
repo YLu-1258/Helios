@@ -6,7 +6,6 @@ import re
 import random
 import asyncio
 import pafy
-import youtube_dl
 from urllib.parse import quote 
 from discord.ext import commands
 from discord.utils import get
