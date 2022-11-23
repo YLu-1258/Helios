@@ -27,6 +27,7 @@ class Helios(commands.Bot):
         print("{0} has sucessfully connected to Discord".format(bot.user))
     
 
+
 bot = Helios()
 bot.remove_command('help')
 asyncio.run(bot.load_cogs())
