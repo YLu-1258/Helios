@@ -6,6 +6,7 @@ import re
 import random
 import asyncio
 import pafy
+import nacl
 from urllib.parse import quote 
 from discord.ext import commands
 from discord.utils import get
@@ -17,7 +18,6 @@ from Utility import link_tools
 from Utility.link_tools import getSongs, validUrl, sortLink
 from Utility.spotify import SpotifyToYoutube
 
-from Utility import genius
 from Utility.genius import Genius_Client
 
 
