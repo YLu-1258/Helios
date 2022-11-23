@@ -1,4 +1,3 @@
-import lyricsgenius
 from lyricsgenius import Genius
 
 Client_Token = "_osY5nFvpXfjG6JI_SFze8JCa8mBDIqiSWkAxawPsAHI4Yti1kzakEK4zcQS4fCX"
