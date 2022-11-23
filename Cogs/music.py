@@ -17,8 +17,8 @@ from Utility import link_tools
 from Utility.link_tools import getSongs, validUrl, sortLink
 from Utility.spotify import SpotifyToYoutube
 
-from Utility import genius
-from Utility.genius import Genius_Client
+#from Utility import genius
+#from Utility.genius import Genius_Client
 
 
 FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5','options': '-vn'}
@@ -254,7 +254,7 @@ class Music(commands.Cog):
         self.bot = bot
         self.players = {}
         self.S2Y = SpotifyToYoutube()
-        self.gclient = Genius_Client()
+        #self.gclient = Genius_Client()
 
     async def cleanup(self, guild):
         try:
@@ -778,45 +778,45 @@ class Music(commands.Cog):
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             await ctx.send(embed=embed)
 
-    @commands.command(pass_context = True, brief='Shows the lyrics of the song', aliases=['lyric', 'lyr'])
-    async def lyrics(self, ctx, *, search=''):
-        player = self.get_player(ctx)
-        if search == '':
-            channel = ctx.message.author.voice
-            channelid = ctx.message.author.voice
-            bot_channel = ctx.guild.me.voice
-            if channel == None:
-                embed = discord.Embed(title="Uh Oh!", description="Join a voice channel before using this command", color=0xff9900)
-                embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
-                return await ctx.send(embed=embed)
-            if not bot_channel:
-                embed = discord.Embed(title="Uh Oh!", description="I need to join a channel before using this command", color=0xff9900)
-                embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
-                return await ctx.send(embed=embed)
-            channelid = ctx.message.author.voice.channel.id
-            bot_channel = ctx.guild.me.voice.channel.id
-            channel = ctx.message.author.voice.channel
-            if bot_channel != channelid:
-                embed = discord.Embed(title="Uh Oh!", description="Join my channel before using this command", color=0xff9900)
-                embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
-                return await ctx.send(embed=embed)
-            vc = get(self.bot.voice_clients, guild=ctx.guild)
-            player = self.get_player(ctx)
-            CURR_SONG = player.Queue._queue[player.Queue.pos].title
-        else:
-            CURR_SONG = search
-
-        song = self.gclient.get_lyric(CURR_SONG)
-        if song is None:
-            embed = discord.Embed(title="Uh Oh!", description="Could not find the lyrics to the song", color=0xff0000)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
-            await ctx.send(embed=embed)
-            return
-        song_front_buffer = len(song.title + " lyrics")
-        song_back_buffer = len(song.lyrics)-5
-        embed = discord.Embed(title="Lyrics of {} by {}".format(song.title, song.artist), description = song.lyrics[song_front_buffer:song_back_buffer], color=0xfd00f5)
-        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
-        await ctx.send(embed=embed, mention_author=False)
+#    @commands.command(pass_context = True, brief='Shows the lyrics of the song', aliases=['lyric', 'lyr'])
+#    async def lyrics(self, ctx, *, search=''):
+#        player = self.get_player(ctx)
+#        if search == '':
+#            channel = ctx.message.author.voice
+#            channelid = ctx.message.author.voice
+#            bot_channel = ctx.guild.me.voice
+#            if channel == None:
+#                embed = discord.Embed(title="Uh Oh!", description="Join a voice channel before using this command", color=0xff9900)
+#                embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
+#                return await ctx.send(embed=embed)
+#            if not bot_channel:
+#                embed = discord.Embed(title="Uh Oh!", description="I need to join a channel before using this command", color=0xff9900)
+#                embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
+#                return await ctx.send(embed=embed)
+#            channelid = ctx.message.author.voice.channel.id
+#            bot_channel = ctx.guild.me.voice.channel.id
+#            channel = ctx.message.author.voice.channel
+#            if bot_channel != channelid:
+#                embed = discord.Embed(title="Uh Oh!", description="Join my channel before using this command", color=0xff9900)
+#                embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
+#                return await ctx.send(embed=embed)
+#            vc = get(self.bot.voice_clients, guild=ctx.guild)
+#            player = self.get_player(ctx)
+#            CURR_SONG = player.Queue._queue[player.Queue.pos].title
+#        else:
+#            CURR_SONG = search
+#
+#        song = self.gclient.get_lyric(CURR_SONG)
+#        if song is None:
+#            embed = discord.Embed(title="Uh Oh!", description="Could not find the lyrics to the song", color=0xff0000)
+#            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
+#            await ctx.send(embed=embed)
+#            return
+#        song_front_buffer = len(song.title + " lyrics")
+#        song_back_buffer = len(song.lyrics)-5
+#        embed = discord.Embed(title="Lyrics of {} by {}".format(song.title, song.artist), description = song.lyrics[song_front_buffer:song_back_buffer], color=0xfd00f5)
+#        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
+#        await ctx.send(embed=embed, mention_author=False)
 
     
 async def setup(bot):
