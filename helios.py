@@ -11,7 +11,7 @@ class Helios(commands.Bot):
     def load_cogs(self):    
         print("Loading cogs")
         for cog in self._cogs:
-            if cog not in  ["options", "Utility"]:
+            if cog not in  ["options", "Utility", "pafy"]:
                 self.load_extension(f"Cogs.{cog}")
                 print(f"{cog} commands have been loaded")
         print("All cogs Loaded")
