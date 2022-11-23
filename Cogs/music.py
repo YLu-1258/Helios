@@ -148,17 +148,17 @@ class Player(commands.Cog):
                     continue
                 if(i<3 and counter==10):
                     embed1 = discord.Embed(title="Uh Oh!", description="Could not load requested song", color=0xff0066)
-                    embed1.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+                    embed1.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
                     await ctx.send(embed=embed1, mention_author=False)
                     return
             embed1 = discord.Embed(title="Please Select a Song", description=track_list, color=0x00ffff)
-            embed1.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed1.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             embed1.set_footer(text="Pick an option or type 'cancel'")
             await ctx.send(embed=embed1, mention_author=False)
             msg = await self.bot.wait_for("message", check=check)
             if msg.content in ("cancel", "Cancel", "c", "C"):
                 embed1 = discord.Embed(title="Song Selection Cancelled", description="Please try again", color=0xff0066)
-                embed1.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+                embed1.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
                 await ctx.send(embed=embed1, mention_author=False)
                 return
             song_id = tracker[int(msg.content[-1])-1]
@@ -175,14 +175,14 @@ class Player(commands.Cog):
                     song = pafy.new(inp_song)
                 except:
                     embed1 = discord.Embed(title="Uh Oh!", description="Could not load requested song", color=0xff0066)
-                    embed1.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+                    embed1.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
                     await ctx.send(embed=embed1, mention_author=False)
                     return
         
         self.Queue.add_song(song)
         if not playlist:
             embed2 = discord.Embed(title="Successfully Queued", description="Song **{0}** by *{1}*".format(song.title, song.author), color=0x00ffff)
-            embed2.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed2.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             await ctx.send(embed=embed2, mention_author=False)
         
 
@@ -321,7 +321,7 @@ class Music(commands.Cog):
         channel = ctx.message.author.voice
         if channel == None:
             embed = discord.Embed(title="Uh Oh!", description="Join a voice channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         channel = ctx.message.author.voice.channel
         voice = get(ctx.guild.voice_channels, name=channel.name)
@@ -342,11 +342,11 @@ class Music(commands.Cog):
         channel = ctx.message.author.voice
         if channel == None:
             embed = discord.Embed(title="Uh Oh!", description="Join a voice channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         if search == '':
             embed = discord.Embed(title="Uh Oh!", description="Please provide something to play", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         
         # Get information about voice call 
@@ -375,7 +375,7 @@ class Music(commands.Cog):
             for videoId in ids:
                 await player.store_song(ctx, videoId, True)
             embed2 = discord.Embed(title="Requested Youtube Playlist has Been Queued", color=0x00ffff)
-            embed2.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed2.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             await ctx.send(embed=embed2, mention_author=False)
 
         # Spotify Song
@@ -389,7 +389,7 @@ class Music(commands.Cog):
             for query in pl:
                 await player.store_song(ctx, query, True)
             embed2 = discord.Embed(title="Requested Spotify Playlist has Been Queued", color=0x00ffff)
-            embed2.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed2.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             await ctx.send(embed=embed2, mention_author=False)
         
         # Search By Name
@@ -408,18 +408,18 @@ class Music(commands.Cog):
         bot_channel = ctx.guild.me.voice
         if channel == None:
             embed = discord.Embed(title="Uh Oh!", description="Join a voice channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         if not bot_channel:
             embed = discord.Embed(title="Uh Oh!", description="I need to join a channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         channelid = ctx.message.author.voice.channel.id
         bot_channel = ctx.guild.me.voice.channel.id
         channel = ctx.message.author.voice.channel
         if bot_channel != channelid:
             embed = discord.Embed(title="Uh Oh!", description="Join my channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         voice = get(self.bot.voice_clients, guild=ctx.guild)
         if voice and voice.is_connected():
@@ -429,7 +429,7 @@ class Music(commands.Cog):
             await ctx.send(embed=embed)
         else:
             embed = discord.Embed(title="Uh Oh!", description="Join a voice channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
 
 
@@ -441,23 +441,23 @@ class Music(commands.Cog):
         bot_channel = ctx.guild.me.voice
         if channel == None:
             embed = discord.Embed(title="Uh Oh!", description="Join a voice channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         if not bot_channel:
             embed = discord.Embed(title="Uh Oh!", description="I need to join a channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         channelid = ctx.message.author.voice.channel.id
         bot_channel = ctx.guild.me.voice.channel.id
         channel = ctx.message.author.voice.channel
         if bot_channel != channelid:
             embed = discord.Embed(title="Uh Oh!", description="Join my channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         vc = get(self.bot.voice_clients, guild=ctx.guild)
         if not vc or not vc.is_playing():
             embed = discord.Embed(title="Uh Oh!", description="I am currently not playing anything", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         elif vc.is_paused():
             return
@@ -474,27 +474,27 @@ class Music(commands.Cog):
         bot_channel = ctx.guild.me.voice
         if channel == None:
             embed = discord.Embed(title="Uh Oh!", description="Join a voice channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         if not bot_channel:
             embed = discord.Embed(title="Uh Oh!", description="I need to join a channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         channelid = ctx.message.author.voice.channel.id
         bot_channel = ctx.guild.me.voice.channel.id
         channel = ctx.message.author.voice.channel
         if bot_channel != channelid:
             embed = discord.Embed(title="Uh Oh!", description="Join my channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         vc = get(self.bot.voice_clients, guild=ctx.guild)
         if not vc or vc.is_playing():
             embed = discord.Embed(title="Uh Oh!", description="I am already playing something", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         elif not vc.is_paused():
             embed = discord.Embed(title="Uh Oh!", description="I am currently not playing anything", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
 
         vc.resume()
@@ -508,18 +508,18 @@ class Music(commands.Cog):
         bot_channel = ctx.guild.me.voice
         if channel == None:
             embed = discord.Embed(title="Uh Oh!", description="Join a voice channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         if not bot_channel:
             embed = discord.Embed(title="Uh Oh!", description="I need to join a channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         channelid = ctx.message.author.voice.channel.id
         bot_channel = ctx.guild.me.voice.channel.id
         channel = ctx.message.author.voice.channel
         if bot_channel != channelid:
             embed = discord.Embed(title="Uh Oh!", description="Join my channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         vc = get(self.bot.voice_clients, guild=ctx.guild)
         player = self.get_player(ctx)
@@ -538,11 +538,11 @@ class Music(commands.Cog):
                 await ctx.message.add_reaction("⏹️")
             else:
                 embed = discord.Embed(title="Uh Oh!", description="Invalid input", color=0xff0066)
-                embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+                embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
                 await ctx.send(embed=embed)
         except:
             embed = discord.Embed(title="Uh Oh!", description="Invalid input", color=0xff0066)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             await ctx.send(embed=embed)            
 
     @commands.command(pass_context = True, brief='Displays the current Playlist/Queue', aliases=['playlist', 'q'])
@@ -553,18 +553,18 @@ class Music(commands.Cog):
         bot_channel = ctx.guild.me.voice
         if channel == None:
             embed = discord.Embed(title="Uh Oh!", description="Join a voice channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         if not bot_channel:
             embed = discord.Embed(title="Uh Oh!", description="I need to join a channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         channelid = ctx.message.author.voice.channel.id
         bot_channel = ctx.guild.me.voice.channel.id
         channel = ctx.message.author.voice.channel
         if bot_channel != channelid:
             embed = discord.Embed(title="Uh Oh!", description="Join my channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         player = self.get_player(ctx)
         page = int(page)
@@ -572,7 +572,7 @@ class Music(commands.Cog):
             await player.print_queue(page)
         except:
             embed = discord.Embed(title="Uh Oh!", description="Invalid input", color=0xff0066)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             await ctx.send(embed=embed)
 
     @commands.command(pass_context = True, brief='loops a way based on input', aliases=['lop'])
@@ -582,41 +582,41 @@ class Music(commands.Cog):
         bot_channel = ctx.guild.me.voice
         if channel == None:
             embed = discord.Embed(title="Uh Oh!", description="Join a voice channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         if not bot_channel:
             embed = discord.Embed(title="Uh Oh!", description="I need to join a channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         channelid = ctx.message.author.voice.channel.id
         bot_channel = ctx.guild.me.voice.channel.id
         channel = ctx.message.author.voice.channel
         if bot_channel != channelid:
             embed = discord.Embed(title="Uh Oh!", description="Join my channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         vc = get(self.bot.voice_clients, guild=ctx.guild)
         player = self.get_player(ctx)
         if pos in ('0', 'un' , 'u'):
             player.Queue.repmode = 0
             embed = discord.Embed(title="Unlooping Song/Track!", color=0xfd00f5)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             await ctx.send(embed=embed, mention_author=False)
         elif pos in ('1', 'current', 'song'):
             player.Queue.repmode = 1
             embed = discord.Embed(title="Looping Song!", description="Now looping: **{0}** by *{1}*".format(player.Queue._queue[player.Queue.pos].title, player.Queue._queue[player.Queue.pos].author), color=0xfd00f5, url="https://www.youtube.com/watch?v={0}".format(player.Queue._queue[player.Queue.pos].videoid))
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             embed.set_thumbnail(url=player.Queue._queue[player.Queue.pos].thumb)
             embed.set_footer(text="Duration: {0}".format(str(player.Queue._queue[player.Queue.pos].duration)))
             await ctx.send(embed=embed, mention_author=False)
         elif pos in ('2', 'all', 'track'):
             player.Queue.repmode = 2
             embed = discord.Embed(title="Looping Track!", color=0xfd00f5)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             await ctx.send(embed=embed, mention_author=False)
         else:
             embed = discord.Embed(title="Uh Oh!", description="Invalid input", color=0xff0066)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             await ctx.send(embed=embed)
 
     @commands.command(pass_context = True, brief='shuffles track', aliases=['sh'])
@@ -626,25 +626,25 @@ class Music(commands.Cog):
         bot_channel = ctx.guild.me.voice
         if channel == None:
             embed = discord.Embed(title="Uh Oh!", description="Join a voice channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         if not bot_channel:
             embed = discord.Embed(title="Uh Oh!", description="I need to join a channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         channelid = ctx.message.author.voice.channel.id
         bot_channel = ctx.guild.me.voice.channel.id
         channel = ctx.message.author.voice.channel
         if bot_channel != channelid:
             embed = discord.Embed(title="Uh Oh!", description="Join my channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         vc = get(self.bot.voice_clients, guild=ctx.guild)
         player = self.get_player(ctx)
         random.shuffle(player.Queue._queue)
         
         embed = discord.Embed(title="Shuffling Track!", color=0xfd00f5)
-        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
         await ctx.send(embed=embed, mention_author=False)
         player.Queue.pos-=1
         if player.Queue.repmode ==1:
@@ -659,25 +659,25 @@ class Music(commands.Cog):
         bot_channel = ctx.guild.me.voice
         if channel == None:
             embed = discord.Embed(title="Uh Oh!", description="Join a voice channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         if not bot_channel:
             embed = discord.Embed(title="Uh Oh!", description="I need to join a channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         channelid = ctx.message.author.voice.channel.id
         bot_channel = ctx.guild.me.voice.channel.id
         channel = ctx.message.author.voice.channel
         if bot_channel != channelid:
             embed = discord.Embed(title="Uh Oh!", description="Join my channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         vc = get(self.bot.voice_clients, guild=ctx.guild)
         player = self.get_player(ctx)
         if pos == 'current':
             pos=player.Queue.pos
             embed = discord.Embed(title="Removing Song", description="**{0}** by *{1}*".format(player.Queue._queue[pos].title, player.Queue._queue[pos].author), color=0xfd00f5)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             player.Queue._queue.pop(pos)
             if player.Queue.repmode==1 and pos == player.Queue.pos:
                 player.Queue.repmode=0
@@ -693,7 +693,7 @@ class Music(commands.Cog):
         try:
             pos = int(pos) - 1
             embed = discord.Embed(title="Removing Song", description="**{0}** by *{1}*".format(player.Queue._queue[pos].title, player.Queue._queue[pos].author), color=0xfd00f5)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             player.Queue._queue.pop(pos)
             if player.Queue.repmode==1 and pos == player.Queue.pos:
                 player.Queue.repmode=0
@@ -705,7 +705,7 @@ class Music(commands.Cog):
             await ctx.send(embed=embed, mention_author=False)
         except:
             embed = discord.Embed(title="Uh Oh!", description="Invalid input", color=0xff0066)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             await ctx.send(embed=embed)
 
     @commands.command(pass_context = True, brief='Shows currently playing song', aliases=['info', "cur"])
@@ -715,18 +715,18 @@ class Music(commands.Cog):
         bot_channel = ctx.guild.me.voice
         if channel == None:
             embed = discord.Embed(title="Uh Oh!", description="Join a voice channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         if not bot_channel:
             embed = discord.Embed(title="Uh Oh!", description="I need to join a channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         channelid = ctx.message.author.voice.channel.id
         bot_channel = ctx.guild.me.voice.channel.id
         channel = ctx.message.author.voice.channel
         if bot_channel != channelid:
             embed = discord.Embed(title="Uh Oh!", description="Join my channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         vc = get(self.bot.voice_clients, guild=ctx.guild)
         player = self.get_player(ctx)
@@ -734,7 +734,7 @@ class Music(commands.Cog):
             await player.currently_playing()
         else:
             embed = discord.Embed(title="Uh Oh!", description="I am currently not playing anything", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
 
     @commands.command(pass_context = True, brief='restarts a song', aliases=['rep'])
@@ -744,24 +744,24 @@ class Music(commands.Cog):
         bot_channel = ctx.guild.me.voice
         if channel == None:
             embed = discord.Embed(title="Uh Oh!", description="Join a voice channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         if not bot_channel:
             embed = discord.Embed(title="Uh Oh!", description="I need to join a channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         channelid = ctx.message.author.voice.channel.id
         bot_channel = ctx.guild.me.voice.channel.id
         channel = ctx.message.author.voice.channel
         if bot_channel != channelid:
             embed = discord.Embed(title="Uh Oh!", description="Join my channel before using this command", color=0xff9900)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=embed)
         vc = get(self.bot.voice_clients, guild=ctx.guild)
         player = self.get_player(ctx)
         if pos in ("all", "a", "track"):
             embed = discord.Embed(title="Restarting Track", color=0xfd00f5)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             await ctx.send(embed=embed, mention_author=False)
             player.Queue.pos = -1
             if player.Queue.repmode==1:
@@ -769,13 +769,13 @@ class Music(commands.Cog):
             vc.stop()
         elif pos == '':
             embed = discord.Embed(title="Restarting Song", color=0xfd00f5)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             await ctx.send(embed=embed, mention_author=False)
             player.Queue.pos-=1
             vc.stop()
         else:
             embed = discord.Embed(title="Uh Oh!", description="Invalid input", color=0xff4d94)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             await ctx.send(embed=embed)
 
     @commands.command(pass_context = True, brief='Shows the lyrics of the song', aliases=['lyric', 'lyr'])
@@ -787,18 +787,18 @@ class Music(commands.Cog):
             bot_channel = ctx.guild.me.voice
             if channel == None:
                 embed = discord.Embed(title="Uh Oh!", description="Join a voice channel before using this command", color=0xff9900)
-                embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+                embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
                 return await ctx.send(embed=embed)
             if not bot_channel:
                 embed = discord.Embed(title="Uh Oh!", description="I need to join a channel before using this command", color=0xff9900)
-                embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+                embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
                 return await ctx.send(embed=embed)
             channelid = ctx.message.author.voice.channel.id
             bot_channel = ctx.guild.me.voice.channel.id
             channel = ctx.message.author.voice.channel
             if bot_channel != channelid:
                 embed = discord.Embed(title="Uh Oh!", description="Join my channel before using this command", color=0xff9900)
-                embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+                embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
                 return await ctx.send(embed=embed)
             vc = get(self.bot.voice_clients, guild=ctx.guild)
             player = self.get_player(ctx)
@@ -809,15 +809,15 @@ class Music(commands.Cog):
         song = self.gclient.get_lyric(CURR_SONG)
         if song is None:
             embed = discord.Embed(title="Uh Oh!", description="Could not find the lyrics to the song", color=0xff0000)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             await ctx.send(embed=embed)
             return
         song_front_buffer = len(song.title + " lyrics")
         song_back_buffer = len(song.lyrics)-5
         embed = discord.Embed(title="Lyrics of {} by {}".format(song.title, song.artist), description = song.lyrics[song_front_buffer:song_back_buffer], color=0xfd00f5)
-        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
         await ctx.send(embed=embed, mention_author=False)
 
     
-def setup(bot):
-    bot.add_cog(Music(bot))
+async def setup(bot):
+    await bot.add_cog(Music(bot))

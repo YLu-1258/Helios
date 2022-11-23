@@ -14,5 +14,5 @@ class Help(commands.Cog):
             embed1.set_footer(text="Called by: {0}".format(ctx.author.display_name))
             await ctx.send(embed=embed1)
             
-def setup(bot):
-    bot.add_cog(Help(bot))
+async def setup(bot):
+    await bot.add_cog(Help(bot))

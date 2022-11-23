@@ -2,23 +2,25 @@ import discord
 import options
 from discord.ext import commands
 from pathlib import Path
+import asyncio
 
 class Helios(commands.Bot):
     def __init__(self):
-        super().__init__(command_prefix=".", help_command=None)
+        intents = discord.Intents.all()
+        super().__init__(command_prefix=".", intents=intents)
         self._cogs = [path.stem for path in Path("./Cogs").glob("*.py")]
     
-    def load_cogs(self):    
+    async def load_cogs(self):    
         print("Loading cogs")
         for cog in self._cogs:
-            if cog not in  ["options", "Utility", "pafy", "youtube_dl", "spotipy", "redis", "packaging", "lyricsgenius", "bs4"]:
-                self.load_extension(f"Cogs.{cog}")
+            if cog not in  ["options", "Utility"]:
+                await self.load_extension(f"Cogs.{cog}")
                 print(f"{cog} commands have been loaded")
         print("All cogs Loaded")
 
-    def run(self):
-        self.load_cogs()
-        super().run(options.DISCORD_TOKEN, reconnect= True)
+    #async def run(self):
+     #   await self.load_cogs()
+     #   await super().run(options.DISCORD_TOKEN, reconnect= True)
     
     async def on_ready(self):
         await self.change_presence(status=discord.Status.do_not_disturb, activity=discord.Game('Smurfin in diamond lobbies'))
@@ -27,4 +29,6 @@ class Helios(commands.Bot):
 
 bot = Helios()
 bot.remove_command('help')
-bot.run()
+asyncio.run(bot.load_cogs())
+asyncio.run(bot.run(options.DISCORD_TOKEN, reconnect= True))
+#bot.run()
