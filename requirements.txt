@@ -1,6 +1,10 @@
 discord.py==2.1.0
 discord_ui==5.1.6
 pynacl==1.5.0
+youtube-dl==2021.12.17
+spotipy==2.20.0
+redis==4.3.4
+packaging==21.3
 lxml==4.9.1
 pafy==0.5.5
 requests==2.25.1
